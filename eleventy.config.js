@@ -124,6 +124,15 @@ export default function (eleventyConfig) {
     });
   });
 
+  // Collection: Wire notes (microblog). Written by hand or by an ingest agent
+  // into ./src/notes/*.md; `permalink: false` keeps them page-less — they only
+  // ever render inside /wire/ and its feed.
+  eleventyConfig.addCollection("notes", (collection) => {
+    return collection
+      .getFilteredByGlob("./src/notes/*.md")
+      .sort((a, b) => b.date - a.date);
+  });
+
   // Collection: Tags
   eleventyConfig.addCollection("tagList", (collection) => {
     const tagsSet = new Set();
@@ -187,6 +196,39 @@ export default function (eleventyConfig) {
 
   eleventyConfig.addFilter("wordCount", countWords);
 
+  // Payload size of a wire note, rendered as `38 B` in the packet header.
+  eleventyConfig.addFilter("charCount", (content) => {
+    if (typeof content !== "string") return 0;
+    return content.replace(/<[^>]+>/g, "").trim().length;
+  });
+
+  // Plain-text preview — feed readers show a title prominently, and a wire
+  // note has no title of its own, so its opening words stand in.
+  eleventyConfig.addFilter("excerpt", (content, max = 70) => {
+    if (typeof content !== "string") return "";
+    const text = content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    return text.length <= max ? text : text.slice(0, max - 1).trimEnd() + "…";
+  });
+
+  // Stable anchor id for a wire note: 20260726-024117. Derived from the
+  // timestamp, not the filename — Eleventy strips the YYYY-MM-DD- prefix off
+  // fileSlug, which would let two notes on different days collide.
+  eleventyConfig.addFilter("noteId", (dateObj) => {
+    return new Date(dateObj)
+      .toISOString()
+      .replace(/[-:]/g, "")
+      .replace("T", "-")
+      .slice(0, 15);
+  });
+
+  // Zero-pad a sequence number: 42 -> 0042
+  eleventyConfig.addFilter("pad", (n, len = 4) => String(n).padStart(len, "0"));
+
+  // UTC wall-clock, e.g. `02:41Z`. Wire notes are timestamps first, dates second.
+  eleventyConfig.addFilter("utcTime", (dateObj) => {
+    return new Date(dateObj).toISOString().slice(11, 16) + "Z";
+  });
+
   // Reading time filter
   eleventyConfig.addFilter("readingTime", (content) => {
     return Math.max(1, Math.ceil(countWords(content) / 200));
@@ -205,6 +247,10 @@ export default function (eleventyConfig) {
 
   // Markdown configuration with TOC and anchor links
   eleventyConfig.amendLibrary("md", (mdLib) => {
+    // Bare URLs become links — wire notes are typed on a phone and rarely
+    // carry Markdown link syntax.
+    mdLib.set({ linkify: true });
+
     mdLib.use(markdownItAnchor, {
       permalink: markdownItAnchor.permalink.ariaHidden({
         placement: "after",

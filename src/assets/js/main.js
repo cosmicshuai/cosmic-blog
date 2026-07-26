@@ -36,6 +36,7 @@ function bootSequence() {
     ['PHOSPHOR', 'AMBER P3'],
     ['LINK', location.host || 'localhost'],
     ['MOUNT /posts', (index.posts.length || 0) + ' RECORDS'],
+    ['MOUNT /wire', (index.notes.length || 0) + ' PACKETS'],
     ['READY.', ''],
   ];
 
@@ -348,7 +349,7 @@ function makeModal(el, { onOpen, onClose } = {}) {
 
 function readNavIndex() {
   const node = $('#nav-index');
-  const empty = { pages: [], posts: [], tags: [], extras: [] };
+  const empty = { pages: [], posts: [], tags: [], notes: [], extras: [] };
   if (!node) return empty;
   try {
     return Object.assign(empty, JSON.parse(node.textContent));
@@ -392,6 +393,7 @@ function commandPalette() {
     ...index.pages.map((p) => ({ ...p, kind: 'page' })),
     ...index.posts.map((p) => ({ ...p, kind: 'post' })),
     ...index.tags.map((p) => ({ ...p, kind: 'tag' })),
+    ...index.notes.map((p) => ({ ...p, kind: 'wire' })),
     ...index.extras.map((p) => ({ ...p, kind: 'link' })),
   ];
 
