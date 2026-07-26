@@ -1,0 +1,44 @@
+{# Directory-listing row — the shared shape for every post index on the site. #}
+{% macro lsRow(post, activeTag) %}
+<li class="ls-row group border-b border-line/60 last:border-b-0">
+  <span class="hidden text-p-faint md:inline" aria-hidden="true">-rw-r--r--</span>
+  <span class="hidden text-p-faint md:inline" aria-hidden="true">{{ post.templateContent | readingTime }}min</span>
+  <time datetime="{{ post.date | htmlDateString }}" class="block text-xs text-p-dim md:text-sm">
+    {{ post.date | htmlDateString }}
+  </time>
+  <span class="block">
+    <a href="{{ post.url }}" class="ls-name block text-base font-medium transition-colors before:absolute before:inset-0 before:content-['']">
+      {{ post.data.title }}
+    </a>
+    {% if post.data.description %}
+      <span class="mt-1 block max-w-measure text-[13px] leading-relaxed text-p-dim">{{ post.data.description }}</span>
+    {% endif %}
+    {% if post.data.tags %}
+      <span class="mt-2 flex flex-wrap gap-1.5">
+        {% for t in post.data.tags %}
+          {% if t != "posts" %}
+            <span class="border px-1.5 py-0.5 text-[11px] {% if t == activeTag %}border-p bg-p text-bg{% else %}border-line-2 text-p-faint{% endif %}">#{{ t }}</span>
+          {% endif %}
+        {% endfor %}
+      </span>
+    {% endif %}
+  </span>
+</li>
+{% endmacro %}
+
+{# Panel header rail with an ASCII texture block. #}
+{% macro panelHead(label, meta) %}
+<div class="panel-hd">
+  <span><span class="text-p/50" aria-hidden="true">▚▚</span> {{ label }}</span>
+  {% if meta %}<span class="text-p/50">{{ meta }}</span>{% endif %}
+</div>
+{% endmacro %}
+
+{# Section rule: label + dashed line running to the edge. #}
+{% macro rule(label, meta) %}
+<div class="mb-6 flex items-baseline gap-4">
+  <h2 class="shrink-0 font-pixel text-[11px] uppercase tracking-widest2 text-p glow-sm">{{ label }}</h2>
+  <span aria-hidden="true" class="h-px flex-1 bg-[repeating-linear-gradient(to_right,rgb(var(--c-line-2))_0_6px,transparent_6px_11px)]"></span>
+  {% if meta %}<span class="shrink-0 font-mono text-[11px] text-p-faint">{{ meta }}</span>{% endif %}
+</div>
+{% endmacro %}

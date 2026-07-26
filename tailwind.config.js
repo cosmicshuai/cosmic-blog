@@ -1,157 +1,114 @@
 import typography from '@tailwindcss/typography';
 
+/** Channel-triplet CSS vars so Tailwind opacity modifiers (`text-p/40`) work. */
+const v = (name) => `rgb(var(${name}) / <alpha-value>)`;
+
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: 'class',
   content: [
-    "./src/**/*.{html,njk,md}",
-    "!./node_modules/**",
+    './src/**/*.{html,njk,md,js}',
+    './eleventy.config.js', // the code-block transform injects .copy-btn
+    '!./node_modules/**',
   ],
   theme: {
     extend: {
-      boxShadow: {
-        'glow': '0 0 20px -5px rgba(0, 0, 0, 0.3)',
-        'glow-green': '0 0 20px -5px rgba(74, 222, 128, 0.4)',
-        'glow-cyan': '0 0 20px -5px rgba(34, 211, 238, 0.4)',
-      },
       colors: {
-        terminal: {
-          green: '#4ade80',
-          cyan: '#22d3ee',
-          dim: '#6b7280',
-          dark: '#0a0a0f',
-          darker: '#050508',
-          surface: '#111118',
-          border: '#1e1e2e',
-          'light-bg': '#f5f5f0',
-          'light-surface': '#ffffff',
-          'light-border': '#e5e5e0',
-        },
+        bg: v('--c-bg'),
+        'bg-deep': v('--c-bg-deep'),
+        surface: v('--c-surface'),
+        'surface-2': v('--c-surface-2'),
+        line: v('--c-line'),
+        'line-2': v('--c-line-2'),
+        // Phosphor ramp — the whole UI is one hue at varying intensity.
+        p: v('--c-p'),
+        'p-hi': v('--c-p-hi'),
+        'p-body': v('--c-p-body'),
+        'p-dim': v('--c-p-dim'),
+        'p-faint': v('--c-p-faint'),
+        // The only two escapes from monochrome.
+        ok: v('--c-ok'),
+        warn: v('--c-warn'),
       },
       fontFamily: {
-        sans: ['JetBrains Mono', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+        display: ['VT323', 'ui-monospace', 'monospace'],
+        pixel: ['Silkscreen', 'ui-monospace', 'monospace'],
+        mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        sans: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+      },
+      letterSpacing: {
+        widest2: '0.28em',
+      },
+      maxWidth: {
+        screenframe: '78rem',
+        measure: '70ch',
+      },
+      boxShadow: {
+        bloom: '0 0 24px -6px rgb(var(--c-p) / 0.55)',
+        'bloom-lg': '0 0 60px -12px rgb(var(--c-p) / 0.5)',
+        inset1: 'inset 0 1px 0 0 rgb(var(--c-p) / 0.10)',
       },
       animation: {
-        'fade-in': 'fadeIn 0.5s ease-in-out',
-        'slide-up': 'slideUp 0.5s ease-out',
-        'float': 'float 20s ease-in-out infinite',
-        'float-delayed': 'float 20s ease-in-out 10s infinite',
-        'shimmer': 'shimmer 3s linear infinite',
-        'pulse-glow': 'pulse-glow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        flicker: 'flicker 6s steps(1, end) infinite',
+        roll: 'roll 9s linear infinite',
+        blink: 'blink 1.05s step-end infinite',
+        sweep: 'sweep 2.4s ease-in-out infinite',
+        'bar-pulse': 'barPulse 1.6s ease-in-out infinite',
+        'power-on': 'powerOn 620ms cubic-bezier(0.16, 1, 0.3, 1) both',
       },
       keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
+        flicker: {
+          '0%, 96%, 100%': { opacity: '0' },
+          '97%': { opacity: '0.35' },
+          '98%': { opacity: '0.08' },
+          '99%': { opacity: '0.22' },
         },
-        slideUp: {
-          '0%': { transform: 'translateY(20px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
+        roll: {
+          '0%': { transform: 'translateY(-30vh)' },
+          '100%': { transform: 'translateY(130vh)' },
         },
-        float: {
-          '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
-          '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-          '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-        },
-        shimmer: {
-          from: { backgroundPosition: '200% 0' },
-          to: { backgroundPosition: '-200% 0' },
-        },
-        'pulse-glow': {
+        blink: {
           '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '.5' },
+          '50%': { opacity: '0' },
         },
-        gradient: {
-          '0%': { backgroundPosition: '200% 0' },
-          '100%': { backgroundPosition: '-200% 0' },
+        sweep: {
+          '0%': { transform: 'translateX(-110%)' },
+          '100%': { transform: 'translateX(110%)' },
+        },
+        barPulse: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.35' },
+        },
+        powerOn: {
+          '0%': { transform: 'scaleY(0.004) scaleX(1.1)', filter: 'brightness(4)', opacity: '0' },
+          '35%': { transform: 'scaleY(0.02) scaleX(1)', filter: 'brightness(3)', opacity: '1' },
+          '100%': { transform: 'scaleY(1) scaleX(1)', filter: 'brightness(1)', opacity: '1' },
         },
       },
-      typography: {
-        DEFAULT: {
+      typography: () => ({
+        crt: {
           css: {
+            '--tw-prose-body': 'rgb(var(--c-p-body))',
+            '--tw-prose-headings': 'rgb(var(--c-p-hi))',
+            '--tw-prose-lead': 'rgb(var(--c-p-dim))',
+            '--tw-prose-links': 'rgb(var(--c-p))',
+            '--tw-prose-bold': 'rgb(var(--c-p-hi))',
+            '--tw-prose-counters': 'rgb(var(--c-p-dim))',
+            '--tw-prose-bullets': 'rgb(var(--c-p) / 0.55)',
+            '--tw-prose-hr': 'rgb(var(--c-line))',
+            '--tw-prose-quotes': 'rgb(var(--c-p-hi))',
+            '--tw-prose-quote-borders': 'rgb(var(--c-p) / 0.6)',
+            '--tw-prose-captions': 'rgb(var(--c-p-dim))',
+            '--tw-prose-code': 'rgb(var(--c-p))',
+            '--tw-prose-pre-code': 'rgb(var(--c-p-body))',
+            '--tw-prose-pre-bg': 'rgb(var(--c-bg-deep))',
+            '--tw-prose-th-borders': 'rgb(var(--c-line-2))',
+            '--tw-prose-td-borders': 'rgb(var(--c-line))',
             maxWidth: 'none',
-            color: '#6b7280',
-            a: {
-              color: 'var(--color-terminal-cyan)',
-              textDecoration: 'none',
-              '&:hover': {
-                color: 'var(--color-terminal-green)',
-                textDecoration: 'underline',
-              },
-            },
-            h1: {
-              color: 'var(--color-terminal-darker)',
-              fontWeight: '700',
-            },
-            h2: {
-              color: 'var(--color-terminal-darker)',
-              fontWeight: '600',
-            },
-            h3: {
-              color: 'var(--color-terminal-darker)',
-              fontWeight: '600',
-            },
-            code: {
-              color: 'var(--color-terminal-darker)',
-              backgroundColor: '#f1f5f9',
-              padding: '0.25rem 0.375rem',
-              borderRadius: '0.25rem',
-              fontWeight: '400',
-            },
-            'code::before': {
-              content: '""',
-            },
-            'code::after': {
-              content: '""',
-            },
-            pre: {
-              backgroundColor: 'var(--color-terminal-darker)',
-              color: 'var(--color-terminal-light-bg)',
-            },
-            blockquote: {
-              borderLeftColor: 'var(--color-terminal-cyan)',
-              color: '#475569',
-            },
           },
         },
-        invert: {
-          css: {
-            color: '#cbd5e1',
-            a: {
-              color: 'var(--color-terminal-cyan)',
-              '&:hover': {
-                color: 'var(--color-terminal-green)',
-              },
-            },
-            h1: {
-              color: 'var(--color-terminal-light-bg)',
-            },
-            h2: {
-              color: 'var(--color-terminal-light-bg)',
-            },
-            h3: {
-              color: '#e2e8f0',
-            },
-            code: {
-              color: 'var(--color-terminal-light-bg)',
-              backgroundColor: 'var(--color-terminal-surface)',
-            },
-            pre: {
-              backgroundColor: 'var(--color-terminal-darker)',
-              color: 'var(--color-terminal-light-bg)',
-            },
-            blockquote: {
-              borderLeftColor: 'var(--color-terminal-cyan)',
-              color: '#94a3b8',
-              backgroundColor: 'var(--color-terminal-surface)',
-            },
-          },
-        },
-      },
+      }),
     },
   },
-  plugins: [
-    typography,
-  ],
+  plugins: [typography],
 };

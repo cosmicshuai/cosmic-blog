@@ -2,107 +2,111 @@
 layout: base.njk
 ---
 
-<!-- Reading Progress Bar -->
-<div class="reading-progress" id="progress" style="width: 0%"></div>
+<!-- Reading progress — a thin phosphor trace at the top of the tube. -->
+<div class="fixed inset-x-0 top-0 z-[60] h-[2px] bg-transparent" aria-hidden="true">
+  <div id="progress" class="h-full w-0 bg-p shadow-bloom transition-[width] duration-100 ease-out"></div>
+</div>
 
-<article class="max-w-3xl mx-auto animate-fade-in">
-  <!-- Post Header -->
-  <header class="mb-12 text-center">
-    <div class="flex justify-center gap-2 mb-6">
-      {% if tags %}
+<article class="pt-2">
+
+  <!-- ══ FILE HEADER ═══════════════════════════════════════════════ -->
+  <header class="mb-14">
+    <nav class="mb-6 font-mono text-xs text-p-faint" aria-label="Breadcrumb">
+      <a href="/" class="transition-colors hover:text-p">~</a>
+      <span class="text-line-2" aria-hidden="true">/</span>
+      <a href="/posts/" class="transition-colors hover:text-p">posts</a>
+      <span class="text-line-2" aria-hidden="true">/</span>
+      <span class="text-p-dim">{{ page.fileSlug }}.md</span>
+    </nav>
+
+    <h1 class="aberrate max-w-[22ch] font-display text-[clamp(2.25rem,7vw,4.5rem)] leading-[0.95] text-p">
+      {{ title }}
+    </h1>
+
+    {% if description %}
+      <p class="mt-5 max-w-measure font-mono text-base leading-relaxed text-p-dim">{{ description }}</p>
+    {% endif %}
+
+    <!-- stat(1) -->
+    <dl class="mt-8 grid grid-cols-2 gap-px border border-line bg-line sm:grid-cols-4">
+      {% set meta = [
+        { k: "written", v: date | readableDate },
+        { k: "read", v: content | readingTime + " min" },
+        { k: "words", v: content | wordCount },
+        { k: "mode", v: "-rw-r--r--" }
+      ] %}
+      {% for m in meta %}
+        <div class="bg-bg px-3 py-2.5">
+          <dt class="font-pixel text-[10px] uppercase tracking-widest text-p-faint">{{ m.k }}</dt>
+          <dd class="mt-1 font-mono text-sm text-p-hi">{{ m.v }}</dd>
+        </div>
+      {% endfor %}
+    </dl>
+
+    {% if tags %}
+      <div class="mt-4 flex flex-wrap gap-2">
         {% for tag in tags %}
           {% if tag != "posts" %}
-          <a href="/tags/{{ tag | slugify }}/" class="tag">#{{ tag }}</a>
+            <a href="/tags/{{ tag | slugify }}/" class="tag">#{{ tag }}</a>
           {% endif %}
         {% endfor %}
-      {% endif %}
-    </div>
-    
-    <h1 class="text-4xl md:text-5xl font-bold text-terminal-darker dark:text-terminal-light-bg mb-6 leading-tight">{{ title }}</h1>
-    
-    <div class="flex items-center justify-center gap-4 text-sm text-terminal-dim">
-      <time datetime="{{ date | htmlDateString }}" class="flex items-center gap-1">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-        </svg>
-        {{ date | readableDate }}
-      </time>
-      <span>•</span>
-      <span class="flex items-center gap-1">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        {{ content | readingTime }} min read
-      </span>
-    </div>
+      </div>
+    {% endif %}
   </header>
 
-  <!-- Post Content -->
+  <!-- ══ BODY ══════════════════════════════════════════════════════ -->
   <div class="post-content">
     {{ content | safe }}
   </div>
 
-  <!-- Post Footer -->
-  <footer class="mt-20 pt-8 border-t border-terminal-light-border dark:border-terminal-border">
-    <!-- Tags -->
-    {% if tags %}
-    <div class="mb-8">
-      <h3 class="text-sm font-semibold text-terminal-darker dark:text-terminal-light-bg mb-3">Tagged with</h3>
-      <div class="flex flex-wrap gap-2">
-        {% for tag in tags %}
-          {% if tag != "posts" %}
-          <a href="/tags/{{ tag | slugify }}/" class="tag">#{{ tag }}</a>
-          {% endif %}
-        {% endfor %}
+  <!-- ══ EOF ═══════════════════════════════════════════════════════ -->
+  <footer class="mt-20 border-t border-line pt-10">
+
+    <p class="mb-10 font-mono text-sm text-p-faint">
+      <span class="text-p/60">$</span> EOF — {{ content | wordCount }} words, {{ content | readingTime }} min
+    </p>
+
+    <div class="panel bracketed group mb-10">
+      <div class="panel-hd">
+        <span><span class="text-p/50" aria-hidden="true">▚▚</span> author</span>
+        <span class="text-p/50">uid 1000</span>
       </div>
-    </div>
-    {% endif %}
-    
-    <!-- Author Box -->
-    <div class="bg-terminal-light-surface dark:bg-terminal-surface border border-terminal-light-border dark:border-terminal-border rounded-xl p-6 mb-8 flex items-center gap-4">
-      <div class="w-16 h-16 rounded-full bg-gradient-to-br from-terminal-green to-terminal-cyan text-terminal-darker flex items-center justify-center text-white text-2xl font-bold">
-        {{ site.author | first }}
-      </div>
-      <div>
-        <div class="font-semibold text-terminal-darker dark:text-terminal-light-bg">{{ site.author }}</div>
-        <div class="text-sm text-terminal-dim">Writer & Developer</div>
+      <div class="panel-body pool flex items-center gap-5">
+        <span aria-hidden="true" class="flex h-14 w-14 shrink-0 items-center justify-center border border-line bg-bg-deep/50 font-display text-3xl leading-none text-p glow-sm">
+          {{ site.author | first | upper }}
+        </span>
+        <span class="min-w-0">
+          <a href="/about/" class="block font-mono text-sm text-p-hi transition-colors hover:text-p">{{ site.author }}</a>
+          <span class="mt-0.5 block font-mono text-xs text-p-dim">{{ site.role }}</span>
+        </span>
+        <a href="/feed.xml" class="btn-ghost ml-auto hidden shrink-0 sm:inline-flex">subscribe</a>
       </div>
     </div>
 
-    <!-- Prev/Next Navigation -->
-    <nav class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {% set previousPost = collections.posts | getPreviousCollectionItem(page) %}
-      {% set nextPost = collections.posts | getNextCollectionItem(page) %}
-      
-      <div>
+    {% set previousPost = collections.posts | getPreviousCollectionItem(page) %}
+    {% set nextPost = collections.posts | getNextCollectionItem(page) %}
+
+    {% if previousPost or nextPost %}
+      <nav class="grid gap-4 sm:grid-cols-2" aria-label="Adjacent records">
         {% if previousPost %}
-        <a href="{{ previousPost.url }}" class="group block p-4 rounded-xl border border-terminal-light-border dark:border-terminal-border hover:border-terminal-green dark:hover:border-terminal-green transition-colors">
-          <span class="text-sm text-terminal-dim flex items-center gap-1 mb-1">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
-            Previous
-          </span>
-          <span class="font-medium text-terminal-darker dark:text-terminal-light-bg group-hover:text-terminal-green dark:group-hover:text-terminal-green">{{ previousPost.data.title }}</span>
-        </a>
-        {% endif %}
-      </div>
-      
-      <div class="md:text-right">
+          <a href="{{ previousPost.url }}" class="group panel bracketed pool block p-4 transition-colors hover:border-p/50">
+            <span class="font-pixel text-[10px] uppercase tracking-widest text-p-faint">◂ previous</span>
+            <span class="mt-2 block font-mono text-sm text-p-hi transition-colors group-hover:text-p">{{ previousPost.data.title }}</span>
+          </a>
+        {% else %}<span class="hidden sm:block"></span>{% endif %}
+
         {% if nextPost %}
-        <a href="{{ nextPost.url }}" class="group block p-4 rounded-xl border border-terminal-light-border dark:border-terminal-border hover:border-terminal-green dark:hover:border-terminal-green transition-colors">
-          <span class="text-sm text-terminal-dim flex items-center justify-end gap-1 mb-1">
-            Next
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-          </span>
-          <span class="font-medium text-terminal-darker dark:text-terminal-light-bg group-hover:text-terminal-green dark:group-hover:text-terminal-green">{{ nextPost.data.title }}</span>
-        </a>
+          <a href="{{ nextPost.url }}" class="group panel bracketed pool block p-4 text-right transition-colors hover:border-p/50">
+            <span class="font-pixel text-[10px] uppercase tracking-widest text-p-faint">next ▸</span>
+            <span class="mt-2 block font-mono text-sm text-p-hi transition-colors group-hover:text-p">{{ nextPost.data.title }}</span>
+          </a>
         {% endif %}
-      </div>
-    </nav>
+      </nav>
+    {% endif %}
+
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href="/posts/" class="btn-ghost"><span aria-hidden="true">←</span> archive</a>
+      <a href="/" class="btn-ghost">index</a>
+    </div>
   </footer>
 </article>
-
-

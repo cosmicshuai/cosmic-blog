@@ -1,39 +1,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% if title %}{{ title }} - {% endif %}{{ site.title }}</title>
+  <title>{% if title %}{{ title }} :: {% endif %}{{ site.title }}</title>
   <meta name="description" content="{% if description %}{{ description }}{% else %}{{ site.description }}{% endif %}">
-  
+  <meta name="theme-color" content="#0a0705" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f4ecd8" media="(prefers-color-scheme: light)">
+
   <!-- Open Graph -->
+  <meta property="og:site_name" content="{{ site.title }}">
   <meta property="og:title" content="{% if title %}{{ title }}{% else %}{{ site.title }}{% endif %}">
   <meta property="og:description" content="{% if description %}{{ description }}{% else %}{{ site.description }}{% endif %}">
-  <meta property="og:type" content="{% if layout == 'post' %}article{% else %}website{% endif %}">
+  <meta property="og:type" content="{% if layout == 'post.njk' %}article{% else %}website{% endif %}">
   <meta property="og:url" content="{{ site.url }}{{ page.url }}">
+  <meta property="og:image" content="{{ site.url }}/assets/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="{{ site.url }}/assets/og-image.png">
-  <meta property="og:image" content="{{ site.url }}/assets/og-image.png">
   <link rel="canonical" href="{{ site.url }}{{ page.url }}">
-  <meta name="view-transition" content="same-origin">
-  
-  <!-- Favicon -->
+
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-  
-  <!-- Fonts -->
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="/feed.xml">
+
+  <!-- VT323 = CRT display type · IBM Plex Mono = body · Silkscreen = bitmap labels -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Styles -->
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="/styles/output.css">
-  
-  <!-- RSS Feed -->
-  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="/feed.xml">
-  
-  <!-- Theme Script (runs before page renders) -->
+
+  <!-- Runs before first paint: no flash of the wrong tube. -->
   <script>
-    (function() {
-      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      document.documentElement.classList.toggle('dark', theme === 'dark');
+    (function () {
+      var d = document.documentElement;
+      d.classList.remove('no-js');
+      var skipBoot = true;
+      try {
+        var t = localStorage.getItem('cosmic:theme');
+        if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'printout' : 'crt';
+        d.classList.toggle('dark', t === 'crt');
+        if (localStorage.getItem('cosmic:fx') === 'off') d.classList.add('fx-off');
+        skipBoot = sessionStorage.getItem('cosmic:booted') === '1'
+          || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      } catch (e) {
+        d.classList.add('dark');
+      }
+      // Decided before first paint so the POST screen never flashes on
+      // subsequent navigations within a session.
+      if (skipBoot) d.classList.add('booted');
     })();
   </script>
   <script src="/assets/js/main.js" defer></script>

@@ -1,0 +1,8 @@
+[
+  { "label": "HOME", "url": "/", "section": "home", "key": "h", "hint": "index — latest transmissions" },
+  { "label": "POSTS", "url": "/posts/", "section": "posts", "key": "p", "hint": "full archive listing" },
+  { "label": "TAGS", "url": "/tags/", "section": "tags", "key": "t", "hint": "topic index" },
+  { "label": "PHOTOS", "url": "/photography/", "section": "photos", "key": "m", "hint": "frame buffer — image gallery" },
+  { "label": "PROJECTS", "url": "/projects/", "section": "projects", "key": "r", "hint": "process table — what is running" },
+  { "label": "ABOUT", "url": "/about/", "section": "about", "key": "a", "hint": "whoami — operator record" }
+]

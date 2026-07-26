@@ -1,361 +1,655 @@
-// --- Prefers Reduced Motion ---
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* ═══════════════════════════════════════════════════════════════════════
+   COSMIC-OS — interaction layer
+   Vanilla, no dependencies. Every effect degrades to a working page:
+   nothing here is required to read the content.
+   ═══════════════════════════════════════════════════════════════════════ */
 
-// --- Theme Toggle ---
-document.addEventListener('DOMContentLoaded', () => {
-  const themeToggle = document.getElementById('theme-toggle');
-  const html = document.documentElement;
-  if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      const isDark = html.classList.toggle('dark');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    });
-  }
-});
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const root = document.documentElement;
+const $ = (sel, ctx = document) => ctx.querySelector(sel);
+const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
-// --- Mobile Menu Toggle ---
-document.addEventListener('DOMContentLoaded', () => {
-  const toggleBtn = document.querySelector('[data-nav-toggle]');
-  const mobileMenu = document.querySelector('[data-nav-menu]');
-  const mobileThemeToggle = document.getElementById('theme-toggle-mobile');
-  const html = document.documentElement;
-  
-  // Hamburger menu toggle
-  if (toggleBtn && mobileMenu) {
-    toggleBtn.addEventListener('click', () => {
-      const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
-      toggleBtn.setAttribute('aria-expanded', !isExpanded);
-      mobileMenu.classList.toggle('hidden');
-    });
-  }
-  
-  // Mobile theme toggle (same logic as desktop)
-  if (mobileThemeToggle) {
-    mobileThemeToggle.addEventListener('click', () => {
-      const isDark = html.classList.toggle('dark');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    });
-  }
-});
+/** True when the user is typing somewhere and shortcuts must stay out of the way. */
+function isTyping(el) {
+  if (!el) return false;
+  const tag = el.tagName;
+  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable;
+}
 
-// --- Reading Progress ---
-document.addEventListener('DOMContentLoaded', () => {
-  const progressBar = document.getElementById('progress');
-  if (progressBar) {
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrollTop = window.scrollY;
-          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-          const progress = (scrollTop / docHeight) * 100;
-          progressBar.style.width = progress + '%';
-          ticking = false;
-        });
-        ticking = true;
-      }
-    });
-  }
-});
+/* ── POWER-ON SELF TEST ──────────────────────────────────────────────── */
 
-// --- Code Block Copy Button ---
-document.addEventListener('DOMContentLoaded', () => {
-  const copyButtons = document.querySelectorAll('.copy-btn');
-  copyButtons.forEach(button => {
-    button.addEventListener('click', async (e) => {
-      const btn = e.target;
+function bootSequence() {
+  const boot = $('#boot');
+  if (!boot) return;
+
+  // The head script already decided this session shouldn't boot.
+  if (root.classList.contains('booted')) {
+    boot.remove();
+    return;
+  }
+
+  const index = readNavIndex();
+  const lines = [
+    ['COSMIC-OS 2.0.0', 'POWER-ON SELF TEST'],
+    ['CPU', 'OK'],
+    ['MEMORY', '640K OK'],
+    ['PHOSPHOR', 'AMBER P3'],
+    ['LINK', location.host || 'localhost'],
+    ['MOUNT /posts', (index.posts.length || 0) + ' RECORDS'],
+    ['READY.', ''],
+  ];
+
+  const out = $('[data-boot-lines]', boot);
+  let i = 0;
+  let finished = false;
+
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    try {
+      sessionStorage.setItem('cosmic:booted', '1');
+    } catch (e) {
+      /* private mode — boot simply plays again */
+    }
+    boot.classList.add('done');
+    root.classList.add('booted');
+    window.removeEventListener('keydown', skip, true);
+    window.removeEventListener('pointerdown', skip, true);
+    setTimeout(() => boot.remove(), 320);
+  };
+
+  const skip = () => finish();
+  window.addEventListener('keydown', skip, true);
+  window.addEventListener('pointerdown', skip, true);
+
+  const step = () => {
+    if (finished) return;
+    if (i >= lines.length) {
+      setTimeout(finish, 340);
+      return;
+    }
+    const [label, value] = lines[i];
+    const row = document.createElement('div');
+    row.className = 'flex gap-3';
+    const dots = '.'.repeat(Math.max(2, 22 - label.length));
+    row.innerHTML =
+      '<span class="text-p-hi"></span><span class="text-p/30"></span><span class="text-p"></span>';
+    row.children[0].textContent = label;
+    row.children[1].textContent = value ? dots : '';
+    row.children[2].textContent = value;
+    out.appendChild(row);
+    i++;
+    setTimeout(step, 95);
+  };
+
+  // Fail-safe: never let a scripting error leave the overlay up.
+  setTimeout(finish, 4000);
+  step();
+}
+
+/* ── DISPLAY MODE + SCREEN EFFECTS ───────────────────────────────────── */
+
+function displayControls() {
+  const themeState = $('[data-theme-state]');
+  const fxState = $('[data-fx-state]');
+  const fxReadout = $('[data-fx-readout]');
+  const fxBtn = $('[data-fx-toggle]');
+
+  const sync = () => {
+    const crt = root.classList.contains('dark');
+    const fxOn = !root.classList.contains('fx-off');
+    if (themeState) themeState.textContent = crt ? 'CRT' : 'PRT';
+    if (fxState) fxState.textContent = fxOn ? 'ON' : 'OFF';
+    if (fxBtn) fxBtn.setAttribute('aria-pressed', String(fxOn));
+    if (fxReadout) fxReadout.textContent = fxOn ? (crt ? 'amber P3' : 'fanfold') : 'flat';
+  };
+
+  const toggleTheme = () => {
+    const crt = root.classList.toggle('dark');
+    try {
+      localStorage.setItem('cosmic:theme', crt ? 'crt' : 'printout');
+    } catch (e) { /* ignore */ }
+    sync();
+  };
+
+  const toggleFx = () => {
+    const off = root.classList.toggle('fx-off');
+    try {
+      localStorage.setItem('cosmic:fx', off ? 'off' : 'on');
+    } catch (e) { /* ignore */ }
+    sync();
+  };
+
+  $$('[data-theme-toggle]').forEach((b) => b.addEventListener('click', toggleTheme));
+  $$('[data-fx-toggle]').forEach((b) => b.addEventListener('click', toggleFx));
+  sync();
+
+  return { toggleTheme, toggleFx };
+}
+
+/* ── MOBILE NAV ──────────────────────────────────────────────────────── */
+
+function mobileNav() {
+  const btn = $('[data-nav-toggle]');
+  const menu = $('[data-nav-menu]');
+  const label = $('[data-nav-label]');
+  if (!btn || !menu) return;
+
+  btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    menu.hidden = open;
+    if (label) label.textContent = open ? 'MENU' : 'CLOSE';
+  });
+}
+
+/* ── STATUS LINE: CLOCK + SCROLL METER ───────────────────────────────── */
+
+function statusLine() {
+  const clock = $('[data-clock]');
+  if (clock) {
+    const tick = () => {
+      clock.textContent = new Date().toISOString().slice(11, 19) + 'Z';
+    };
+    tick();
+    setInterval(tick, 1000);
+  }
+
+  const meter = $('[data-scroll-meter]');
+  const pct = $('[data-scroll-pct]');
+  const bar = $('#progress');
+  if (!meter && !pct && !bar) return;
+
+  let queued = false;
+  const update = () => {
+    queued = false;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const ratio = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    const percent = Math.round(ratio * 100);
+    if (bar) bar.style.width = percent + '%';
+    if (pct) pct.textContent = percent + '%';
+    if (meter) {
+      const filled = Math.round(ratio * 10);
+      meter.textContent = '█'.repeat(filled) + '░'.repeat(10 - filled);
+    }
+  };
+
+  const onScroll = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(update);
+  };
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  update();
+}
+
+/* ── TYPED TAGLINE ───────────────────────────────────────────────────── */
+
+function typedText() {
+  $$('[data-type]').forEach((host) => {
+    const out = $('[data-type-out]', host);
+    const text = host.getAttribute('data-type') || '';
+    if (!out) return;
+
+    if (reduceMotion) {
+      out.textContent = text;
+      return;
+    }
+
+    out.textContent = '';
+    let i = 0;
+    const delay = Math.max(18, Math.min(55, 1400 / Math.max(text.length, 1)));
+    const step = () => {
+      out.textContent = text.slice(0, i);
+      if (i++ < text.length) setTimeout(step, delay);
+    };
+    setTimeout(step, 260);
+  });
+}
+
+/* ── CURSOR-TRACKED PHOSPHOR POOLING ─────────────────────────────────── */
+
+function cursorPool() {
+  if (reduceMotion || !window.matchMedia('(hover: hover)').matches) return;
+  let queued = false;
+  let last = null;
+
+  document.addEventListener(
+    'pointermove',
+    (e) => {
+      const el = e.target instanceof Element ? e.target.closest('.pool') : null;
+      if (!el) return;
+      last = { el, x: e.clientX, y: e.clientY };
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        if (!last) return;
+        const r = last.el.getBoundingClientRect();
+        last.el.style.setProperty('--mx', last.x - r.left + 'px');
+        last.el.style.setProperty('--my', last.y - r.top + 'px');
+      });
+    },
+    { passive: true }
+  );
+}
+
+/* ── SCROLL REVEAL ───────────────────────────────────────────────────── */
+
+function scrollReveal() {
+  const els = $$('[data-reveal]');
+  if (!els.length) return;
+
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    els.forEach((el) => el.classList.add('revealed'));
+    return;
+  }
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('revealed');
+        io.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+  );
+
+  els.forEach((el) => io.observe(el));
+}
+
+/* ── CODE COPY ───────────────────────────────────────────────────────── */
+
+function codeCopy() {
+  $$('.copy-btn').forEach((btn) => {
+    btn.textContent = 'copy';
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
       const pre = btn.closest('pre');
-      if (!pre) return;
-      
-      const code = pre.querySelector('code');
+      const code = pre && pre.querySelector('code');
       if (!code) return;
-      
       try {
         await navigator.clipboard.writeText(code.innerText);
-        const originalText = btn.innerText;
-        btn.innerText = 'Copied!';
+        btn.textContent = 'copied';
         btn.classList.add('copied');
-        
         setTimeout(() => {
-          btn.innerText = originalText;
+          btn.textContent = 'copy';
           btn.classList.remove('copied');
-        }, 2000);
+        }, 1800);
       } catch (err) {
-        console.error('Failed to copy text: ', err);
+        btn.textContent = 'failed';
+        setTimeout(() => (btn.textContent = 'copy'), 1800);
       }
     });
   });
-});
+}
 
-// --- Placeholders for Future Tasks ---
-// [TASK 6: Typing Hero]
-document.addEventListener('DOMContentLoaded', () => {
-  const heroTitle = document.querySelector('.hero-title');
-  const heroSubtitle = document.querySelector('.hero-subtitle');
-  
-  if (!heroTitle || !heroSubtitle) return;
-  
-  const titleText = heroTitle.getAttribute('data-text') || '';
-  const subtitleText = heroSubtitle.getAttribute('data-text') || '';
-  
-  const titleSpan = heroTitle.querySelector('.typing-title-text');
-  const cursorSpan = heroTitle.querySelector('.typing-cursor');
-  const subtitleSpan = heroSubtitle.querySelector('.typing-subtitle-text');
-  
-  if (!titleSpan || !subtitleSpan || !cursorSpan) return;
+/* ── MODAL PLUMBING ──────────────────────────────────────────────────── */
 
-  if (prefersReducedMotion) {
-    titleSpan.textContent = titleText;
-    subtitleSpan.textContent = subtitleText;
-    cursorSpan.classList.remove('hidden');
-    return;
-  }
-  
-  cursorSpan.classList.remove('hidden');
-  titleSpan.textContent = '';
-  subtitleSpan.textContent = '';
-  
-  const titleDuration = 1200;
-  const subtitleDuration = 1200;
-  
-  const titleDelay = titleText.length > 0 ? titleDuration / titleText.length : 50;
-  const subtitleDelay = subtitleText.length > 0 ? subtitleDuration / subtitleText.length : 50;
-  
-  let i = 0;
-  let j = 0;
-  
-  function typeTitle() {
-    if (i < titleText.length) {
-      titleSpan.textContent += titleText.charAt(i);
-      i++;
-      setTimeout(typeTitle, titleDelay);
-    } else {
-      setTimeout(typeSubtitle, 300);
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+function makeModal(el, { onOpen, onClose } = {}) {
+  let restoreTo = null;
+
+  const trap = (e) => {
+    if (e.key !== 'Tab') return;
+    const items = $$(FOCUSABLE, el).filter((n) => n.offsetParent !== null);
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      last.focus();
+      e.preventDefault();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      first.focus();
+      e.preventDefault();
     }
-  }
-  
-  function typeSubtitle() {
-    if (j < subtitleText.length) {
-      subtitleSpan.textContent += subtitleText.charAt(j);
-      j++;
-      setTimeout(typeSubtitle, subtitleDelay);
+  };
+
+  const api = {
+    get isOpen() {
+      return !el.hidden;
+    },
+    open() {
+      if (!el.hidden) return;
+      restoreTo = document.activeElement;
+      el.hidden = false;
+      document.body.classList.add('lightbox-open');
+      el.addEventListener('keydown', trap);
+      if (onOpen) onOpen();
+    },
+    close() {
+      if (el.hidden) return;
+      el.hidden = true;
+      document.body.classList.remove('lightbox-open');
+      el.removeEventListener('keydown', trap);
+      if (onClose) onClose();
+      if (restoreTo && restoreTo.focus) restoreTo.focus();
+    },
+    toggle() {
+      api.isOpen ? api.close() : api.open();
+    },
+  };
+
+  el.addEventListener('click', (e) => {
+    if (e.target.hasAttribute('data-cmdk-backdrop') || e.target.hasAttribute('data-help-backdrop')) {
+      api.close();
     }
+  });
+
+  return api;
+}
+
+/* ── COMMAND PALETTE ─────────────────────────────────────────────────── */
+
+function readNavIndex() {
+  const node = $('#nav-index');
+  const empty = { pages: [], posts: [], tags: [], extras: [] };
+  if (!node) return empty;
+  try {
+    return Object.assign(empty, JSON.parse(node.textContent));
+  } catch (e) {
+    return empty;
   }
-  
-  setTimeout(typeTitle, 300);
-});
-// [TASK 9: Lightbox]
-document.addEventListener('DOMContentLoaded', () => {
-  const galleryImages = document.querySelectorAll('.gallery-image');
-  if (galleryImages.length === 0) return;
+}
 
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightbox-image');
-  const lightboxCaption = document.getElementById('lightbox-caption');
-  const btnClose = document.getElementById('lightbox-close');
-  const btnPrev = document.getElementById('lightbox-prev');
-  const btnNext = document.getElementById('lightbox-next');
-  
-  if (!lightbox || !lightboxImg) return;
+/** Subsequence match — cheap, forgiving, good enough for a few hundred rows. */
+function fuzzyScore(needle, haystack) {
+  if (!needle) return 1;
+  const n = needle.toLowerCase();
+  const h = haystack.toLowerCase();
+  const direct = h.indexOf(n);
+  if (direct === 0) return 1000;
+  if (direct > 0) return 600 - direct;
 
-  let currentIndex = 0;
-  let lastFocusedElement = null;
+  let score = 0;
+  let hi = 0;
+  let streak = 0;
+  for (let ni = 0; ni < n.length; ni++) {
+    const found = h.indexOf(n[ni], hi);
+    if (found === -1) return 0;
+    streak = found === hi ? streak + 1 : 0;
+    score += 10 + streak * 4;
+    hi = found + 1;
+  }
+  return score;
+}
 
-  const imagesData = Array.from(galleryImages).map((img, index) => {
-    const parent = img.closest('.photo-item');
-    const captionEl = parent ? parent.querySelector('.photo-caption') : null;
+function commandPalette() {
+  const el = $('#cmdk');
+  if (!el) return null;
+
+  const input = $('#cmdk-input', el);
+  const list = $('#cmdk-list', el);
+  const emptyMsg = $('[data-cmdk-empty]', el);
+  const index = readNavIndex();
+
+  const records = [
+    ...index.pages.map((p) => ({ ...p, kind: 'page' })),
+    ...index.posts.map((p) => ({ ...p, kind: 'post' })),
+    ...index.tags.map((p) => ({ ...p, kind: 'tag' })),
+    ...index.extras.map((p) => ({ ...p, kind: 'link' })),
+  ];
+
+  let results = [];
+  let active = 0;
+
+  const modal = makeModal(el, {
+    onOpen() {
+      input.value = '';
+      render('');
+      requestAnimationFrame(() => input.focus());
+    },
+  });
+
+  function render(query) {
+    results = records
+      .map((r) => ({ r, s: Math.max(fuzzyScore(query, r.label), fuzzyScore(query, r.hint || '') * 0.4) }))
+      .filter((x) => x.s > 0)
+      .sort((a, b) => b.s - a.s)
+      .slice(0, 40)
+      .map((x) => x.r);
+
+    active = 0;
+    list.innerHTML = '';
+    emptyMsg.hidden = results.length > 0;
+
+    results.forEach((r, i) => {
+      const li = document.createElement('li');
+      li.className =
+        'cmdk-item flex cursor-pointer items-baseline gap-3 border-l-2 border-transparent px-4 py-2 font-mono text-sm transition-colors';
+      li.setAttribute('role', 'option');
+      li.id = 'cmdk-opt-' + i;
+      li.setAttribute('aria-selected', String(i === 0));
+
+      const kind = document.createElement('span');
+      kind.className = 'w-10 shrink-0 font-pixel text-[9px] uppercase tracking-widest text-p-faint';
+      kind.textContent = r.kind;
+
+      const title = document.createElement('span');
+      title.className = 'cmdk-title min-w-0 flex-1 truncate text-p-hi';
+      title.textContent = r.label;
+
+      const hint = document.createElement('span');
+      hint.className = 'hidden max-w-[45%] shrink-0 truncate text-[11px] text-p-faint sm:block';
+      hint.textContent = r.hint || r.url;
+
+      li.append(kind, title, hint);
+      li.addEventListener('click', () => go(i));
+      li.addEventListener('pointermove', () => select(i));
+      list.appendChild(li);
+    });
+
+    input.setAttribute('aria-activedescendant', results.length ? 'cmdk-opt-0' : '');
+  }
+
+  function select(i) {
+    if (!results.length) return;
+    active = (i + results.length) % results.length;
+    $$('.cmdk-item', list).forEach((n, idx) => n.setAttribute('aria-selected', String(idx === active)));
+    const node = list.children[active];
+    if (node) node.scrollIntoView({ block: 'nearest' });
+    input.setAttribute('aria-activedescendant', 'cmdk-opt-' + active);
+  }
+
+  function go(i) {
+    const r = results[i];
+    if (!r) return;
+    modal.close();
+    window.location.href = r.url;
+  }
+
+  input.addEventListener('input', () => render(input.value.trim()));
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      select(active + 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      select(active - 1);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      go(active);
+    }
+  });
+
+  $$('[data-cmdk-open]').forEach((b) => b.addEventListener('click', () => modal.open()));
+
+  // Show the right modifier for the platform.
+  const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+  $$('[data-cmdk-hint]').forEach((k) => (k.textContent = isMac ? '⌘K' : '^K'));
+
+  return modal;
+}
+
+/* ── LIGHTBOX ────────────────────────────────────────────────────────── */
+
+function lightbox() {
+  const el = $('#lightbox');
+  const items = $$('.photo-item');
+  if (!el || !items.length) return null;
+
+  const img = $('#lightbox-image', el);
+  const caption = $('#lightbox-caption', el);
+  const counter = $('[data-lightbox-counter]', el);
+  const closeBtn = $('#lightbox-close', el);
+  const prevBtn = $('#lightbox-prev', el);
+  const nextBtn = $('#lightbox-next', el);
+
+  const frames = items.map((item) => {
+    const source = item.querySelector('.gallery-image');
+    const cap = item.querySelector('.photo-caption');
     return {
-      src: img.currentSrc || img.src,
-      alt: img.alt,
-      caption: captionEl ? captionEl.getAttribute('data-caption') : '',
-      element: img
+      src: source ? source.currentSrc || source.src : '',
+      alt: source ? source.alt : '',
+      caption: cap ? cap.getAttribute('data-caption') || '' : '',
     };
   });
 
-  function openLightbox(index) {
-    lastFocusedElement = document.activeElement;
-    currentIndex = index;
-    updateLightboxContent();
-    
-    lightbox.classList.remove('hidden');
-    setTimeout(() => {
-      lightbox.classList.remove('opacity-0');
-      lightbox.classList.add('opacity-100');
-    }, 10);
-    
-    document.body.classList.add('lightbox-open');
-    btnClose.focus();
-    
-    document.addEventListener('keydown', handleKeydown);
-  }
+  let current = 0;
 
-  function closeLightbox() {
-    lightbox.classList.remove('opacity-100');
-    lightbox.classList.add('opacity-0');
-    
-    setTimeout(() => {
-      lightbox.classList.add('hidden');
-      document.body.classList.remove('lightbox-open');
-    }, 300);
-    
-    document.removeEventListener('keydown', handleKeydown);
-    
-    if (lastFocusedElement) {
-      lastFocusedElement.focus();
-    }
-  }
+  const paint = () => {
+    const f = frames[current];
+    img.src = f.src;
+    img.alt = f.alt;
+    caption.textContent = f.caption;
+    counter.textContent = current + 1 + '/' + frames.length;
+  };
 
-  function updateLightboxContent() {
-    const data = imagesData[currentIndex];
-    lightboxImg.src = data.src;
-    lightboxImg.alt = data.alt;
-    
-    if (data.caption) {
-      lightboxCaption.textContent = data.caption;
-      lightboxCaption.classList.remove('hidden');
-    } else {
-      lightboxCaption.classList.add('hidden');
-    }
-  }
-
-  function nextImage() {
-    currentIndex = (currentIndex + 1) % imagesData.length;
-    updateLightboxContent();
-  }
-
-  function prevImage() {
-    currentIndex = (currentIndex - 1 + imagesData.length) % imagesData.length;
-    updateLightboxContent();
-  }
-
-  galleryImages.forEach((img, index) => {
-    const parent = img.closest('.photo-item');
-    if (parent) {
-      parent.setAttribute('tabindex', '0');
-      parent.setAttribute('role', 'button');
-      parent.addEventListener('click', () => openLightbox(index));
-      parent.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          openLightbox(index);
-        }
-      });
-    } else {
-      img.addEventListener('click', () => openLightbox(index));
-    }
+  const modal = makeModal(el, {
+    onOpen() {
+      paint();
+      requestAnimationFrame(() => closeBtn.focus());
+    },
   });
 
-  btnClose.addEventListener('click', closeLightbox);
-  btnNext.addEventListener('click', nextImage);
-  btnPrev.addEventListener('click', prevImage);
-  
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox || e.target.classList.contains('lightbox-content')) {
-      closeLightbox();
-    }
+  const openAt = (i) => {
+    current = i;
+    modal.open();
+  };
+  const step = (d) => {
+    current = (current + d + frames.length) % frames.length;
+    paint();
+  };
+
+  items.forEach((item, i) => {
+    item.addEventListener('click', () => openAt(i));
+    item.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openAt(i);
+      }
+    });
   });
 
-  function handleKeydown(e) {
+  closeBtn.addEventListener('click', () => modal.close());
+  prevBtn.addEventListener('click', () => step(-1));
+  nextBtn.addEventListener('click', () => step(1));
+  $('[data-lightbox-backdrop]', el).addEventListener('click', () => modal.close());
+
+  el.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') step(1);
+    else if (e.key === 'ArrowLeft') step(-1);
+  });
+
+  return modal;
+}
+
+/* ── GLOBAL KEYMAP ───────────────────────────────────────────────────── */
+
+function keymap({ cmdk, help, box, display }) {
+  const gotoMap = {};
+  readNavIndex().pages.forEach((p) => {
+    if (p.key) gotoMap[p.key] = p.url;
+  });
+
+  let pendingG = 0;
+
+  window.addEventListener('keydown', (e) => {
+    // ⌘K / Ctrl+K works even inside fields.
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      if (cmdk) cmdk.toggle();
+      return;
+    }
+
     if (e.key === 'Escape') {
-      closeLightbox();
-    } else if (e.key === 'ArrowRight') {
-      nextImage();
-    } else if (e.key === 'ArrowLeft') {
-      prevImage();
-    } else if (e.key === 'Tab') {
-      const focusableElements = [btnClose, btnPrev, btnNext].filter(el => el != null);
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
-      
-      if (e.shiftKey) {
-        if (document.activeElement === firstElement) {
-          lastElement.focus();
-          e.preventDefault();
-        }
-      } else {
-        if (document.activeElement === lastElement) {
-          firstElement.focus();
-          e.preventDefault();
-        }
-      }
+      [cmdk, help, box].forEach((m) => m && m.isOpen && m.close());
+      return;
     }
-  }
-});
-// [TASK 11: Scroll Features]
 
-// --- Scroll-to-Top Button ---
-document.addEventListener('DOMContentLoaded', () => {
-  // Create scroll-to-top button dynamically
-  const scrollBtn = document.createElement('button');
-  scrollBtn.id = 'scroll-to-top';
-  scrollBtn.className = 'hidden fixed bottom-8 right-8 z-40 bg-terminal-surface border border-terminal-border text-terminal-green hover:bg-terminal-green hover:text-terminal-darker p-3 rounded-full shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-terminal-green';
-  scrollBtn.setAttribute('aria-label', 'Scroll to top');
-  scrollBtn.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>';
-  document.body.appendChild(scrollBtn);
+    if (isTyping(e.target) || e.metaKey || e.ctrlKey || e.altKey) return;
+    if ((cmdk && cmdk.isOpen) || (help && help.isOpen) || (box && box.isOpen)) return;
 
-  let scrollTicking = false;
-  
-  window.addEventListener('scroll', () => {
-    if (!scrollTicking) {
-      requestAnimationFrame(() => {
-        if (window.scrollY > 300) {
-          scrollBtn.classList.remove('hidden');
-          scrollBtn.classList.remove('opacity-0', 'translate-y-2');
-          scrollBtn.classList.add('opacity-100', 'translate-y-0');
-        } else {
-          scrollBtn.classList.remove('opacity-100', 'translate-y-0');
-          scrollBtn.classList.add('opacity-0', 'translate-y-2');
-          setTimeout(() => {
-            scrollBtn.classList.add('hidden');
-          }, 300);
-        }
-        scrollTicking = false;
-      });
-      scrollTicking = true;
+    // `g` then a destination key.
+    if (Date.now() - pendingG < 1200 && gotoMap[e.key]) {
+      pendingG = 0;
+      window.location.href = gotoMap[e.key];
+      return;
+    }
+
+    switch (e.key) {
+      case 'g':
+        pendingG = Date.now();
+        break;
+      case '/':
+        e.preventDefault();
+        if (cmdk) cmdk.open();
+        break;
+      case '?':
+        e.preventDefault();
+        if (help) help.toggle();
+        break;
+      case 't':
+        display.toggleTheme();
+        break;
+      case 'f':
+        display.toggleFx();
+        break;
+      case 'j':
+        window.scrollBy({ top: 120, behavior: reduceMotion ? 'auto' : 'smooth' });
+        break;
+      case 'k':
+        window.scrollBy({ top: -120, behavior: reduceMotion ? 'auto' : 'smooth' });
+        break;
+      default:
+        break;
     }
   });
-  
-  scrollBtn.addEventListener('click', () => {
-    window.scrollTo({ 
-      top: 0, 
-      behavior: prefersReducedMotion ? 'auto' : 'smooth' 
-    });
-  });
-});
+}
 
-// --- Scroll-Reveal Animations ---
-document.addEventListener('DOMContentLoaded', () => {
-  const revealElements = document.querySelectorAll('[data-reveal]');
-  if (revealElements.length === 0) return;
+/* ── BOOT ────────────────────────────────────────────────────────────── */
 
-  // Add initial hidden state
-  revealElements.forEach(el => {
-    el.classList.add('reveal-hidden');
-  });
+function init() {
+  const display = displayControls();
+  mobileNav();
+  statusLine();
+  typedText();
+  cursorPool();
+  scrollReveal();
+  codeCopy();
 
-  // Skip animations if user prefers reduced motion
-  if (prefersReducedMotion) {
-    revealElements.forEach(el => {
-      el.classList.remove('reveal-hidden');
-      el.classList.add('revealed');
-    });
-    return;
+  const cmdk = commandPalette();
+  const box = lightbox();
+
+  const helpEl = $('#help');
+  const help = helpEl ? makeModal(helpEl) : null;
+  if (help) {
+    $$('[data-help-open]').forEach((b) => b.addEventListener('click', () => help.toggle()));
+    $$('[data-help-close]').forEach((b) => b.addEventListener('click', () => help.close()));
   }
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.remove('reveal-hidden');
-        entry.target.classList.add('revealed');
-        observer.unobserve(entry.target); // once: true
-      }
-    });
-  }, { 
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  });
+  keymap({ cmdk, help, box, display });
+  bootSequence();
+}
 
-  revealElements.forEach(el => {
-    observer.observe(el);
-  });
-});
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}

@@ -1,0 +1,56 @@
+---
+layout: base.njk
+title: Archive
+section: posts
+permalink: /posts/
+description: Every transmission on disk, newest first.
+---
+{% from "macros.njk" import lsRow, rule %}
+
+<header class="mb-12 pt-4">
+  <p class="mb-3 font-mono text-sm text-p-dim">
+    <span class="text-p glow-sm">$</span> ls -la ~/posts
+  </p>
+  <h1 class="aberrate font-display text-[clamp(2.5rem,9vw,5.5rem)] uppercase leading-[0.9] text-p">Archive</h1>
+  <p class="mt-4 max-w-measure font-mono text-sm leading-relaxed text-p-dim">
+    Every record committed to disk, newest first.
+    <span class="text-p-hi">{{ collections.posts.length }}</span> total across
+    <span class="text-p-hi">{{ collections.validTagList.length }}</span> topics.
+  </p>
+</header>
+
+{% if collections.posts.length === 0 %}
+  <div class="panel bracketed group">
+    <div class="panel-hd">
+      <span><span class="text-p/50" aria-hidden="true">▚▚</span> ~/posts</span>
+      <span class="text-p/50">empty</span>
+    </div>
+    <div class="panel-body">
+      <p class="font-display text-3xl text-p glow">DIRECTORY EMPTY</p>
+      <p class="mt-3 max-w-measure font-mono text-sm text-p-dim">
+        Nothing has been written yet. When the first
+        <code class="border border-line-2 px-1 py-0.5">.md</code> lands in
+        <code class="border border-line-2 px-1 py-0.5">src/posts/</code>, it appears here.
+      </p>
+      <a href="/" class="btn mt-8"><span aria-hidden="true">←</span> back to index</a>
+    </div>
+  </div>
+{% else %}
+  <div class="panel" data-reveal>
+    <div class="panel-hd">
+      <span><span class="text-p/50" aria-hidden="true">▚▚</span> ~/posts</span>
+      <span class="text-p/50">sorted: mtime desc</span>
+    </div>
+
+    <!-- Column key, desktop only -->
+    <div class="hidden grid-cols-[11ch_8ch_13ch_1fr] gap-x-4 border-b border-line px-3 py-1.5 font-pixel text-[10px] uppercase tracking-widest text-p-faint md:grid">
+      <span>mode</span><span>read</span><span>date</span><span>record</span>
+    </div>
+
+    <ul class="divide-y divide-line/60">
+      {% for post in collections.posts %}
+        {{ lsRow(post) }}
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
