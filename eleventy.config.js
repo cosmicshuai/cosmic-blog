@@ -77,11 +77,14 @@ export default function (eleventyConfig) {
   eleventyConfig.addJavaScriptFunction("galleryImage", galleryImageShortcode);
 
   // Date filters
-  eleventyConfig.addFilter("readableDate", (dateObj, format) => {
+  // UTC-pinned: front matter dates are calendar dates, not instants, so the
+  // rendered day must not shift with the build machine's timezone.
+  eleventyConfig.addFilter("readableDate", (dateObj) => {
     return new Date(dateObj).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
+      timeZone: "UTC",
     });
   });
 
@@ -173,12 +176,20 @@ export default function (eleventyConfig) {
     return array.slice(0, limit);
   });
 
+  // Word count — strips tags so markup doesn't inflate the number.
+  const countWords = (content) => {
+    if (typeof content !== "string" || !content.trim()) return 0;
+    return content
+      .replace(/<[^>]+>/g, " ")
+      .split(/\s+/)
+      .filter(Boolean).length;
+  };
+
+  eleventyConfig.addFilter("wordCount", countWords);
+
   // Reading time filter
   eleventyConfig.addFilter("readingTime", (content) => {
-    const wordsPerMinute = 200;
-    const words = content.split(/\s+/).length;
-    const minutes = Math.ceil(words / wordsPerMinute);
-    return minutes;
+    return Math.max(1, Math.ceil(countWords(content) / 200));
   });
 
   // Head filter (for excerpts)

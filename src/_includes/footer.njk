@@ -1,77 +1,74 @@
-<footer class="relative mt-auto bg-terminal-light-bg dark:bg-terminal-dark overflow-hidden">
-  <!-- Subtle top gradient line -->
-  <div class="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-terminal-green to-transparent opacity-50"></div>
-  
-  <!-- Subtle dot pattern background -->
-  <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" style="background-image: radial-gradient(currentColor 1px, transparent 1px); background-size: 16px 16px;"></div>
-  
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
-    <!-- Top Row: Terminal Prompt -->
-    <div class="flex items-center gap-2 font-mono text-sm mb-8 pb-4 border-b border-terminal-light-border dark:border-terminal-border/50">
-      <span class="text-terminal-green">$</span>
-      <span class="text-terminal-dim">echo $FOOTER_DATA</span>
-      <span class="inline-block w-2 h-4 bg-terminal-dim animate-pulse"></span>
-    </div>
+<footer class="relative mt-24 border-t border-line">
+  <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-p/35 to-transparent"></div>
 
-    <!-- Middle: Links Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-12">
-      <div class="space-y-4">
-        <h4 class="text-terminal-darker dark:text-terminal-light-surface font-semibold font-mono flex items-center gap-2">
-          <span class="text-terminal-cyan">drwxr-xr-x</span> Navigation
-        </h4>
-        <ul class="space-y-2 text-sm font-mono">
-          <li><a href="/" class="text-terminal-dim hover:text-terminal-green transition-colors flex items-center gap-2 group"><span class="opacity-0 group-hover:opacity-100 transition-opacity text-terminal-green">./</span>Home</a></li>
-          <li><a href="/about/" class="text-terminal-dim hover:text-terminal-green transition-colors flex items-center gap-2 group"><span class="opacity-0 group-hover:opacity-100 transition-opacity text-terminal-green">./</span>About</a></li>
-          <li><a href="/projects/" class="text-terminal-dim hover:text-terminal-green transition-colors flex items-center gap-2 group"><span class="opacity-0 group-hover:opacity-100 transition-opacity text-terminal-green">./</span>Projects</a></li>
-          <li><a href="/photography/" class="text-terminal-dim hover:text-terminal-green transition-colors flex items-center gap-2 group"><span class="opacity-0 group-hover:opacity-100 transition-opacity text-terminal-green">./</span>Photography</a></li>
+  <div class="mx-auto max-w-screenframe px-4 py-14 sm:px-6">
+
+    <!-- Sign-off prompt -->
+    <p class="mb-10 font-mono text-sm text-p-dim">
+      <span class="text-p glow-sm">$</span> shutdown -h now<span class="cursor-block text-p" aria-hidden="true"></span>
+    </p>
+
+    <div class="grid gap-10 sm:grid-cols-3">
+
+      <div>
+        <h2 class="mb-4 font-pixel text-[11px] uppercase tracking-widest2 text-p">/ index</h2>
+        <ul class="space-y-1.5 font-mono text-sm">
+          {% for item in nav %}
+            <li>
+              <a href="{{ item.url }}" class="group inline-flex items-center gap-2 text-p-dim transition-colors hover:text-p">
+                <span aria-hidden="true" class="text-p/0 transition-colors group-hover:text-p">▸</span>
+                <span class="-ml-4 transition-transform duration-200 group-hover:translate-x-4">{{ item.label | lower }}</span>
+              </a>
+            </li>
+          {% endfor %}
         </ul>
       </div>
 
-      <div class="space-y-4">
-        <h4 class="text-terminal-darker dark:text-terminal-light-surface font-semibold font-mono flex items-center gap-2">
-          <span class="text-terminal-green">-rw-r--r--</span> Connect
-        </h4>
-        <div class="flex flex-col space-y-3">
-          <a href="https://github.com/{{ site.author | lower | replace(' ', '') }}" class="inline-flex items-center gap-3 text-terminal-dim hover:text-terminal-green transition-all duration-300 group">
-            <div class="p-2 rounded-lg bg-terminal-surface border border-terminal-border group-hover:border-terminal-green/50 group-hover:shadow-[0_0_10px_rgba(74,222,128,0.2)] transition-all">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-            </div>
-            <span class="font-mono text-sm">GitHub</span>
-          </a>
-          <a href="/feed.xml" class="inline-flex items-center gap-3 text-terminal-dim hover:text-terminal-cyan transition-all duration-300 group">
-            <div class="p-2 rounded-lg bg-terminal-surface border border-terminal-border group-hover:border-terminal-cyan/50 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6.503 20.752c0 1.794-1.456 3.248-3.251 3.248-1.796 0-3.252-1.454-3.252-3.248 0-1.794 1.456-3.248 3.252-3.248 1.795.001 3.251 1.454 3.251 3.248zm-6.503-12.572v4.811c6.05.062 10.96 4.966 11.022 11.009h4.817c-.062-8.71-7.118-15.758-15.839-15.82zm0-3.368c10.58.046 19.152 8.594 19.183 19.188h4.817c-.03-13.231-10.739-23.98-24-24.026v4.838z"/></svg>
-            </div>
-            <span class="font-mono text-sm">RSS Feed</span>
-          </a>
-        </div>
+      <div>
+        <h2 class="mb-4 font-pixel text-[11px] uppercase tracking-widest2 text-p">/ uplink</h2>
+        <ul class="space-y-1.5 font-mono text-sm">
+          <li>
+            <a href="{{ site.github }}" rel="me noopener" class="group inline-flex items-center gap-2 text-p-dim transition-colors hover:text-p">
+              <span aria-hidden="true" class="text-p/0 transition-colors group-hover:text-p">▸</span>
+              <span class="-ml-4 transition-transform duration-200 group-hover:translate-x-4">github</span>
+            </a>
+          </li>
+          <li>
+            <a href="mailto:{{ site.email }}" class="group inline-flex items-center gap-2 text-p-dim transition-colors hover:text-p">
+              <span aria-hidden="true" class="text-p/0 transition-colors group-hover:text-p">▸</span>
+              <span class="-ml-4 transition-transform duration-200 group-hover:translate-x-4">mail</span>
+            </a>
+          </li>
+          <li>
+            <a href="/feed.xml" class="group inline-flex items-center gap-2 text-p-dim transition-colors hover:text-p">
+              <span aria-hidden="true" class="text-p/0 transition-colors group-hover:text-p">▸</span>
+              <span class="-ml-4 transition-transform duration-200 group-hover:translate-x-4">rss</span>
+            </a>
+          </li>
+        </ul>
       </div>
 
-      <div class="space-y-4">
-        <h4 class="text-terminal-darker dark:text-terminal-light-surface font-semibold font-mono flex items-center gap-2">
-          <span class="text-yellow-500/80">lrwxrwxrwx</span> System Info
-        </h4>
-        <div class="text-xs font-mono text-terminal-dim space-y-2">
-          <div class="flex justify-between"><span>OS:</span> <span>CosmicOS v1.0</span></div>
-          <div class="flex justify-between"><span>Kernel:</span> <span>Eleventy 3.x</span></div>
-          <div class="flex justify-between"><span>Uptime:</span> <span class="text-terminal-green">99.99%</span></div>
-          <div class="flex justify-between"><span>Status:</span> <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-terminal-green inline-block animate-pulse"></span> Online</span></div>
-        </div>
+      <div>
+        <h2 class="mb-4 font-pixel text-[11px] uppercase tracking-widest2 text-p">/ dmesg</h2>
+        <dl class="space-y-1.5 font-mono text-sm text-p-dim">
+          <div class="flex justify-between gap-4"><dt>display</dt><dd data-fx-readout class="text-p-hi">amber P3</dd></div>
+          <div class="flex justify-between gap-4"><dt>records</dt><dd class="text-p-hi">{{ collections.posts.length | default(0) }}</dd></div>
+          <div class="flex justify-between gap-4"><dt>topics</dt><dd class="text-p-hi">{{ collections.validTagList.length | default(0) }}</dd></div>
+          <div class="flex justify-between gap-4"><dt>frames</dt><dd class="text-p-hi">{{ photos.length | default(0) }}</dd></div>
+          <div class="flex justify-between gap-4"><dt>kernel</dt><dd class="text-p-hi">eleventy 3.x</dd></div>
+          <div class="flex justify-between gap-4"><dt>status</dt><dd class="text-ok">nominal</dd></div>
+        </dl>
       </div>
     </div>
 
-    <!-- Bottom: Copyright & Build Info -->
-    <div class="pt-6 border-t border-terminal-light-border dark:border-terminal-border/50 flex flex-col md:flex-row items-center justify-between gap-4">
-      <p class="text-terminal-dim text-xs font-mono">
-        &copy; {{ page.date | dateYear }} {{ site.author }}. All rights reserved.
+    <div class="mt-12 flex flex-col items-start justify-between gap-3 border-t border-line pt-6 font-mono text-[11px] text-p-faint sm:flex-row sm:items-center">
+      <p>© {{ page.date | dateYear }} {{ site.author }} — transmitted from a warm cathode.</p>
+      <p class="flex flex-wrap items-center gap-x-2">
+        <span>11ty</span><span class="text-line-2">·</span>
+        <span>tailwind</span><span class="text-line-2">·</span>
+        <span>cloudflare</span><span class="text-line-2">·</span>
+        <span class="border border-line-2 px-1.5 py-0.5 text-p-dim">v2.0.0</span>
       </p>
-      <div class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs font-mono text-terminal-dim">
-        <span>Built with <a href="https://www.11ty.dev/" class="text-terminal-cyan hover:text-terminal-green transition-colors">11ty</a></span>
-        <span class="opacity-50">•</span>
-        <span>Deployed on <a href="https://pages.cloudflare.com/" class="text-terminal-cyan hover:text-terminal-green transition-colors">Cloudflare</a></span>
-        <span class="opacity-50">•</span>
-        <span class="bg-terminal-surface px-2 py-0.5 rounded border border-terminal-border text-terminal-green">v1.0.0</span>
-      </div>
     </div>
   </div>
 </footer>

@@ -1,0 +1,98 @@
+<!-- ── POWER-ON SELF TEST ─────────────────────────────────────────────
+     Hidden by default. The inline head script un-hides it only on the
+     first page of a session, so there is never a flash on later loads. -->
+<div id="boot" aria-hidden="true">
+  <div class="w-full max-w-2xl px-6 font-mono text-sm text-p">
+    <pre class="mb-8 font-mono text-[9px] font-semibold leading-none text-p glow sm:text-sm" aria-hidden="true">█████ █████ █████ █   █ █████ █████
+█     █   █ █     ██ ██   █   █
+█     █   █ █████ █ █ █   █   █
+█     █   █     █ █   █   █   █
+█████ █████ █████ █   █ █████ █████</pre>
+    <div data-boot-lines class="space-y-1"></div>
+    <p class="mt-8 text-[11px] text-p-faint">press any key to skip</p>
+  </div>
+</div>
+
+<!-- ── COMMAND PALETTE ───────────────────────────────────────────── -->
+<div id="cmdk" hidden class="fixed inset-0 z-[9999] flex items-start justify-center p-4 pt-[12vh]"
+     role="dialog" aria-modal="true" aria-labelledby="cmdk-label">
+  <div data-cmdk-backdrop class="absolute inset-0 bg-bg-deep/85 backdrop-blur-sm"></div>
+
+  <div class="panel bracketed relative w-full max-w-xl shadow-bloom-lg">
+    <div class="panel-hd">
+      <span id="cmdk-label">▚ command</span>
+      <span class="text-p/50">esc to abort</span>
+    </div>
+
+    <div class="flex items-center gap-2 border-b border-line px-4 py-3">
+      <span aria-hidden="true" class="font-mono text-p glow-sm">$</span>
+      <input id="cmdk-input" type="text" autocomplete="off" autocorrect="off" spellcheck="false"
+             placeholder="goto / search transmissions…"
+             role="combobox" aria-expanded="true" aria-controls="cmdk-list" aria-autocomplete="list"
+             class="w-full bg-transparent font-mono text-sm text-p-hi placeholder:text-p-faint focus:outline-none">
+    </div>
+
+    <ul id="cmdk-list" role="listbox" aria-label="Results"
+        class="max-h-[46vh] overflow-y-auto py-1"></ul>
+
+    <p data-cmdk-empty hidden class="px-4 py-6 text-center font-mono text-sm text-p-dim">
+      no matching records
+    </p>
+
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-line px-4 py-2 font-mono text-[11px] text-p-faint">
+      <span><kbd class="kbd">↑</kbd><kbd class="kbd ml-1">↓</kbd> move</span>
+      <span><kbd class="kbd">↵</kbd> open</span>
+      <span><kbd class="kbd">esc</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── KEYBOARD REFERENCE ────────────────────────────────────────── -->
+<div id="help" hidden class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+     role="dialog" aria-modal="true" aria-labelledby="help-label">
+  <div data-help-backdrop class="absolute inset-0 bg-bg-deep/85 backdrop-blur-sm"></div>
+
+  <div class="panel bracketed relative w-full max-w-lg shadow-bloom-lg">
+    <div class="panel-hd">
+      <span id="help-label">▚ keymap</span>
+      <button type="button" data-help-close class="text-p/60 transition-colors hover:text-p" aria-label="Close">✕</button>
+    </div>
+
+    <dl class="divide-y divide-line font-mono text-sm">
+      {% set keys = [
+        { k: "⌘K", alt: "/", d: "open command palette" },
+        { k: "g h", d: "goto home" },
+        { k: "g p", d: "goto posts archive" },
+        { k: "g t", d: "goto tag index" },
+        { k: "g m", d: "goto photography" },
+        { k: "g r", d: "goto projects" },
+        { k: "g a", d: "goto about" },
+        { k: "j", alt: "k", d: "scroll down / up" },
+        { k: "t", d: "switch CRT ⇄ printout" },
+        { k: "f", d: "toggle screen effects" },
+        { k: "?", d: "this panel" }
+      ] %}
+      {% for row in keys %}
+        <div class="flex items-center gap-4 px-4 py-2">
+          <dt class="flex w-24 shrink-0 gap-1">
+            <kbd class="kbd">{{ row.k }}</kbd>
+            {% if row.alt %}<kbd class="kbd">{{ row.alt }}</kbd>{% endif %}
+          </dt>
+          <dd class="text-p-dim">{{ row.d }}</dd>
+        </div>
+      {% endfor %}
+    </dl>
+  </div>
+</div>
+
+<!-- Navigation index consumed by the command palette. -->
+<script type="application/json" id="nav-index">
+{
+  "pages": {{ nav | dump | safe }},
+  "posts": [{% for post in collections.posts %}{"label":{{ post.data.title | dump | safe }},"url":{{ post.url | dump | safe }},"hint":{{ (post.data.description or "transmission") | dump | safe }}}{% if not loop.last %},{% endif %}{% endfor %}],
+  "tags": [{% for tag in collections.validTagList %}{"label":{{ ("#" + tag) | dump | safe }},"url":{{ ("/tags/" + (tag | slugify) + "/") | dump | safe }},"hint":"topic"}{% if not loop.last %},{% endif %}{% endfor %}],
+  "extras": [
+    { "label": "RSS FEED", "url": "/feed.xml", "hint": "raw XML transmission feed" }
+  ]
+}
+</script>

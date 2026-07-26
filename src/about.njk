@@ -1,246 +1,136 @@
 ---
 layout: base.njk
-title: About
+title: whoami
+section: about
+description: Operator record, hardware inventory and contact channels.
 ---
+{% from "macros.njk" import rule %}
 
-<!-- Terminal Header with whoami command -->
-<section class="mb-16">
-  <div class="terminal-window bg-terminal-surface/80 backdrop-blur-md border border-terminal-border rounded-xl overflow-hidden max-w-3xl mx-auto shadow-2xl relative group">
-    <div class="absolute inset-0 bg-gradient-to-br from-terminal-green/5 to-terminal-cyan/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-    <div class="terminal-chrome bg-terminal-darker/90 px-4 py-3 flex items-center justify-between border-b border-terminal-border">
-      <div class="flex items-center gap-2">
-        <div class="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-400 transition-colors"></div>
-        <div class="w-3 h-3 rounded-full bg-yellow-500/80 hover:bg-yellow-400 transition-colors"></div>
-        <div class="w-3 h-3 rounded-full bg-green-500/80 hover:bg-green-400 transition-colors"></div>
-      </div>
-      <div class="text-xs text-terminal-dim font-mono flex items-center gap-2">
-        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-        ssh cosmic@server
-      </div>
+<!-- ══ IDENTITY ══════════════════════════════════════════════════════ -->
+<header class="mb-16 pt-4">
+  <p class="mb-3 font-mono text-sm text-p-dim">
+    <span class="text-p glow-sm">$</span> whoami &amp;&amp; finger {{ site.author }}
+  </p>
+  <h1 class="aberrate font-display text-[clamp(2.5rem,9vw,5.5rem)] uppercase leading-[0.9] text-p">{{ site.author }}</h1>
+  <p class="mt-4 font-mono text-sm uppercase tracking-widest text-p-dim">{{ site.role }}</p>
+</header>
+
+<section class="mb-20 grid items-start gap-4 md:grid-cols-6" data-reveal>
+
+  <!-- passwd entry -->
+  <div class="panel md:col-span-4">
+    <div class="panel-hd">
+      <span><span class="text-p/50" aria-hidden="true">▚▚</span> /etc/passwd</span>
+      <span class="text-p/50">read-only</span>
     </div>
-    <div class="terminal-body p-6 md:p-10 font-mono text-sm md:text-base relative z-10">
-      <div class="flex items-center gap-2 text-terminal-light-surface mb-2">
-        <span class="text-terminal-green">$</span>
-        <span class="typing-animation">whoami</span>
-      </div>
-      <div class="text-terminal-green text-lg mb-6 ml-4">{{ site.author }}</div>
-      
-      <div class="flex items-center gap-2 text-terminal-light-surface mb-2">
-        <span class="text-terminal-green">$</span>
-        <span>cat ~/.status</span>
-      </div>
-      <div class="text-terminal-cyan ml-4 flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-terminal-green animate-pulse"></span>
-        Building the future.
-      </div>
+    <div class="panel-body">
+      <dl class="font-mono text-sm">
+        {% set fields = [
+          { k: "login",  v: site.author },
+          { k: "uid",    v: "1000" },
+          { k: "shell",  v: "/bin/zsh" },
+          { k: "home",   v: "/home/" + site.author },
+          { k: "gecos",  v: site.role }
+        ] %}
+        {% for f in fields %}
+          <div class="flex gap-4 border-b border-line/60 py-2 last:border-b-0">
+            <dt class="w-20 shrink-0 text-p-faint">{{ f.k }}</dt>
+            <dd class="text-p-hi">{{ f.v }}</dd>
+          </div>
+        {% endfor %}
+      </dl>
+    </div>
+  </div>
+
+  <!-- Avatar plate -->
+  <div class="panel bracketed group md:col-span-2">
+    <div class="panel-hd">
+      <span><span class="text-p/50" aria-hidden="true">▚▚</span> avatar</span>
+      <span class="text-p/50">1-bit</span>
+    </div>
+    <div class="pool flex aspect-square items-center justify-center bg-bg-deep/50">
+      <span class="aberrate font-display text-[8rem] leading-none text-p glow" aria-hidden="true">
+        {{ site.author | first | upper }}
+      </span>
+    </div>
+    <div class="border-t border-line px-3 py-2 font-mono text-[11px] text-p-faint">
+      <span class="inline-block h-1.5 w-1.5 rounded-full bg-ok align-middle animate-bar-pulse" aria-hidden="true"></span>
+      logged in — tty1
     </div>
   </div>
 </section>
 
-<!-- Avatar and Bio Section -->
-<section class="max-w-4xl mx-auto mb-20" data-reveal>
-  <div class="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
-    <!-- Avatar -->
-    <div class="md:col-span-4 flex justify-center">
-      <div class="relative group">
-        <div class="absolute -inset-1 rounded-full bg-gradient-to-r from-terminal-green to-terminal-cyan opacity-50 blur-md group-hover:opacity-100 transition duration-500"></div>
-        <div class="relative w-48 h-48 md:w-56 md:h-56 rounded-full bg-terminal-darker flex items-center justify-center text-white text-6xl md:text-7xl font-bold shadow-2xl border-2 border-terminal-border overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-br from-terminal-green/20 to-terminal-cyan/20"></div>
-          <span class="relative z-10 text-transparent bg-clip-text bg-gradient-to-br from-terminal-green to-terminal-cyan">{{ site.author | first | upper }}</span>
-        </div>
-        <!-- Online indicator -->
-        <div class="absolute bottom-4 right-4 w-6 h-6 rounded-full bg-terminal-green border-4 border-terminal-darker shadow-[0_0_10px_rgba(74,222,128,0.8)]">
-          <div class="absolute inset-0 rounded-full bg-terminal-green animate-ping opacity-75"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bio -->
-    <div class="md:col-span-8">
-      <h1 class="text-3xl md:text-5xl font-bold text-terminal-light-surface mb-6 font-mono flex items-center gap-3">
-        <span class="text-terminal-green text-2xl md:text-4xl">❯</span> About
-      </h1>
-      
-      <div class="space-y-6 text-terminal-dim text-lg leading-relaxed">
-        <p>
-          I'm a <span class="text-terminal-light-surface bg-terminal-green/10 px-1 rounded">software engineer</span> and creative technologist operating from the digital frontier. I spend my days crafting elegant code and my nights exploring the intersection of technology, design, and storytelling.
-        </p>
-        
-        <p>
-          When I'm not debugging or shipping features, you'll find me behind a camera lens exploring the beauty of the mundane. <span class="text-terminal-light-surface bg-terminal-cyan/10 px-1 rounded">Photography is my meditation</span>—a way to pause and frame the world differently.
-        </p>
-        
-        <p>
-          Welcome to my corner of the web. Here you'll find essays on code, life lessons learned through building, and visual stories.
-        </p>
-      </div>
-    </div>
+<!-- ══ BIO ═══════════════════════════════════════════════════════════ -->
+<section class="mb-20" data-reveal>
+  {{ rule("readme", "~/README.md") }}
+  <div class="max-w-measure space-y-5 font-mono text-sm leading-[1.85] text-p-body">
+    <p>
+      I build software and take pictures. Days go to systems that have to stay up —
+      APIs, data paths, the unglamorous plumbing that everything else stands on.
+      Nights go to whatever I'm curious about that week.
+    </p>
+    <p>
+      Photography is the counterweight. Code is endlessly revisable; a frame is not.
+      Deciding once, in the moment, and living with it turns out to be a useful discipline
+      to carry back to the keyboard.
+    </p>
+    <p>
+      This site is the long-form record of both — essays on building things, notes from
+      the field, and whatever the camera came home with. No analytics, no newsletter,
+      no popups. Just files on a server.
+    </p>
   </div>
 </section>
 
-<!-- System Specs Bento -->
-<section class="max-w-4xl mx-auto mb-20" data-reveal>
-  <div class="flex items-center gap-4 mb-8">
-    <h2 class="text-2xl font-bold text-terminal-light-surface font-mono">
-      <span class="text-terminal-cyan">❯</span> System Specs
-    </h2>
-    <div class="flex-1 h-px bg-gradient-to-r from-terminal-border to-transparent"></div>
-  </div>
+<!-- ══ HARDWARE ══════════════════════════════════════════════════════ -->
+<section class="mb-20" data-reveal>
+  {{ rule("lshw", "inventory") }}
 
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-    <div class="bg-terminal-surface/50 backdrop-blur-sm border border-terminal-border rounded-2xl p-6 relative overflow-hidden group hover:border-terminal-green/50 transition-all duration-300">
-      <div class="absolute inset-0 bg-gradient-to-br from-terminal-green/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-      <div class="text-terminal-green mb-4 transform group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+  <div class="grid gap-4 sm:grid-cols-3">
+    {% set kit = [
+      { label: "languages", items: ["TypeScript", "Python", "Rust", "Go", "SQL"] },
+      { label: "stack", items: ["React", "Node", "Postgres", "Redis", "Cloudflare"] },
+      { label: "bench", items: ["Neovim", "tmux", "Docker", "Git", "Figma"] }
+    ] %}
+    {% for group in kit %}
+      <div class="group panel bracketed pool">
+        <div class="panel-hd">
+          <span><span class="text-p/50" aria-hidden="true">▚▚</span> {{ group.label }}</span>
+        </div>
+        <ul class="panel-body space-y-1.5 font-mono text-sm">
+          {% for item in group.items %}
+            <li class="flex items-baseline gap-2 text-p-dim">
+              <span class="text-p/40" aria-hidden="true">▸</span>{{ item }}
+            </li>
+          {% endfor %}
+        </ul>
       </div>
-      <h3 class="text-terminal-light-surface font-mono font-semibold mb-1">Languages</h3>
-      <p class="text-terminal-dim text-sm">TypeScript, Python, Rust, Go, SQL</p>
-    </div>
-    
-    <div class="bg-terminal-surface/50 backdrop-blur-sm border border-terminal-border rounded-2xl p-6 relative overflow-hidden group hover:border-terminal-cyan/50 transition-all duration-300">
-      <div class="absolute inset-0 bg-gradient-to-br from-terminal-cyan/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-      <div class="text-terminal-cyan mb-4 transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-      </div>
-      <h3 class="text-terminal-light-surface font-mono font-semibold mb-1">Stack</h3>
-      <p class="text-terminal-dim text-sm">React, Next.js, Node.js, Postgres, Redis</p>
-    </div>
-    
-    <div class="bg-terminal-surface/50 backdrop-blur-sm border border-terminal-border rounded-2xl p-6 relative overflow-hidden group hover:border-yellow-500/50 transition-all duration-300">
-      <div class="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-      <div class="text-yellow-500/80 mb-4 transform group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
-      </div>
-      <h3 class="text-terminal-light-surface font-mono font-semibold mb-1">Tools</h3>
-      <p class="text-terminal-dim text-sm">Neovim, Docker, Git, Figma, Cloudflare</p>
-    </div>
+    {% endfor %}
   </div>
 </section>
 
-<!-- Interests Grid -->
-<section class="max-w-4xl mx-auto mb-20" data-reveal>
-  <div class="flex items-center gap-4 mb-8">
-    <h2 class="text-2xl font-bold text-terminal-light-surface font-mono">
-      <span class="text-terminal-green">❯</span> Interests
-    </h2>
-    <div class="flex-1 h-px bg-gradient-to-r from-terminal-border to-transparent"></div>
-  </div>
+<!-- ══ CONTACT ═══════════════════════════════════════════════════════ -->
+<section class="mb-16" data-reveal>
+  {{ rule("channels", "open") }}
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-    <!-- Interest Cards -->
-    <div class="glow bg-terminal-surface/60 backdrop-blur-sm border border-terminal-border rounded-2xl p-6 group hover:-translate-y-1 transition-all duration-300">
-      <div class="flex items-center gap-4 mb-3">
-        <div class="w-10 h-10 rounded-full bg-terminal-green/10 flex items-center justify-center text-terminal-green group-hover:bg-terminal-green group-hover:text-terminal-darker transition-colors duration-300">
-          <svg class="w-5 h-5 transform group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+  <div class="grid gap-4 sm:grid-cols-3">
+    {% set channels = [
+      { label: "github", value: site.github | replace("https://", ""), url: site.github, note: "source & experiments" },
+      { label: "mail", value: site.email, url: "mailto:" + site.email, note: "inbox is always open" },
+      { label: "rss", value: "/feed.xml", url: "/feed.xml", note: "raw transmission feed" }
+    ] %}
+    {% for ch in channels %}
+      <a href="{{ ch.url }}" {% if ch.label == "github" %}rel="me noopener"{% endif %}
+         class="group panel bracketed pool block transition-colors hover:border-p/50">
+        <div class="panel-hd">
+          <span><span class="text-p/50" aria-hidden="true">▚▚</span> {{ ch.label }}</span>
+          <span class="text-p/50 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">→</span>
         </div>
-        <h3 class="text-terminal-light-surface font-mono font-semibold text-lg">Full-Stack Dev</h3>
-      </div>
-      <p class="text-terminal-dim leading-relaxed">Building scalable systems from frontend to backend, with a passion for clean code and architecture.</p>
-    </div>
-
-    <div class="glow bg-terminal-surface/60 backdrop-blur-sm border border-terminal-border rounded-2xl p-6 group hover:-translate-y-1 transition-all duration-300">
-      <div class="flex items-center gap-4 mb-3">
-        <div class="w-10 h-10 rounded-full bg-terminal-cyan/10 flex items-center justify-center text-terminal-cyan group-hover:bg-terminal-cyan group-hover:text-terminal-darker transition-colors duration-300">
-          <svg class="w-5 h-5 transform group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        <div class="panel-body">
+          <p class="break-all font-mono text-sm text-p-hi transition-colors group-hover:text-p">{{ ch.value }}</p>
+          <p class="mt-2 font-mono text-[11px] text-p-faint">{{ ch.note }}</p>
         </div>
-        <h3 class="text-terminal-light-surface font-mono font-semibold text-lg">Digital Photography</h3>
-      </div>
-      <p class="text-terminal-dim leading-relaxed">Capturing light and moments through the lens. Street, landscape, and documentary photography.</p>
-    </div>
-
-    <div class="glow bg-terminal-surface/60 backdrop-blur-sm border border-terminal-border rounded-2xl p-6 group hover:-translate-y-1 transition-all duration-300">
-      <div class="flex items-center gap-4 mb-3">
-        <div class="w-10 h-10 rounded-full bg-terminal-green/10 flex items-center justify-center text-terminal-green group-hover:bg-terminal-green group-hover:text-terminal-darker transition-colors duration-300">
-          <svg class="w-5 h-5 transform group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-        </div>
-        <h3 class="text-terminal-light-surface font-mono font-semibold text-lg">Open Source</h3>
-      </div>
-      <p class="text-terminal-dim leading-relaxed">Contributing to the community and building tools that help developers ship faster and better.</p>
-    </div>
-
-    <div class="glow bg-terminal-surface/60 backdrop-blur-sm border border-terminal-border rounded-2xl p-6 group hover:-translate-y-1 transition-all duration-300">
-      <div class="flex items-center gap-4 mb-3">
-        <div class="w-10 h-10 rounded-full bg-terminal-cyan/10 flex items-center justify-center text-terminal-cyan group-hover:bg-terminal-cyan group-hover:text-terminal-darker transition-colors duration-300">
-          <svg class="w-5 h-5 transform group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-        </div>
-        <h3 class="text-terminal-light-surface font-mono font-semibold text-lg">Web Performance</h3>
-      </div>
-      <p class="text-terminal-dim leading-relaxed">Obsessed with fast, responsive experiences. Optimizing for humans first, metrics second.</p>
-    </div>
-  </div>
-</section>
-
-<!-- Social Links Section -->
-<section class="max-w-4xl mx-auto mb-20" data-reveal>
-  <div class="flex items-center gap-4 mb-8">
-    <h2 class="text-2xl font-bold text-terminal-light-surface font-mono">
-      <span class="text-terminal-green">❯</span> Network
-    </h2>
-    <div class="flex-1 h-px bg-gradient-to-r from-terminal-border to-transparent"></div>
-  </div>
-
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-    <!-- GitHub -->
-    <a href="#" class="flex flex-col items-center justify-center gap-3 bg-terminal-surface/40 border border-terminal-border hover:border-terminal-green hover:bg-terminal-green/5 p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1 group">
-      <div class="w-12 h-12 rounded-full bg-terminal-darker flex items-center justify-center border border-terminal-border group-hover:border-terminal-green transition-colors">
-        <svg class="w-6 h-6 text-terminal-dim group-hover:text-terminal-green transition-colors" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.868-.013-1.703-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.89 1.529 2.341 1.544 2.914 1.186.092-.923.35-1.544.636-1.9-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.137 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
-        </svg>
-      </div>
-      <span class="font-mono text-sm font-medium">GitHub</span>
-    </a>
-
-    <!-- Twitter/X -->
-    <a href="#" class="flex flex-col items-center justify-center gap-3 bg-terminal-surface/40 border border-terminal-border hover:border-terminal-cyan hover:bg-terminal-cyan/5 p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1 group">
-      <div class="w-12 h-12 rounded-full bg-terminal-darker flex items-center justify-center border border-terminal-border group-hover:border-terminal-cyan transition-colors">
-        <svg class="w-5 h-5 text-terminal-dim group-hover:text-terminal-cyan transition-colors" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.64l-5.195-6.791-5.966 6.791h-3.31l7.73-8.835L2.25 2.25h6.814l4.97 6.574 5.468-6.574zM16.556 19.373l5.048-5.768h-1.708l-4.99 5.768h1.65z"/>
-        </svg>
-      </div>
-      <span class="font-mono text-sm font-medium">Twitter</span>
-    </a>
-
-    <!-- Email -->
-    <a href="mailto:hello@cosmic.dev" class="flex flex-col items-center justify-center gap-3 bg-terminal-surface/40 border border-terminal-border hover:border-terminal-green hover:bg-terminal-green/5 p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1 group">
-      <div class="w-12 h-12 rounded-full bg-terminal-darker flex items-center justify-center border border-terminal-border group-hover:border-terminal-green transition-colors">
-        <svg class="w-6 h-6 text-terminal-dim group-hover:text-terminal-green transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-        </svg>
-      </div>
-      <span class="font-mono text-sm font-medium">Email</span>
-    </a>
-
-    <!-- RSS -->
-    <a href="/feed.xml" class="flex flex-col items-center justify-center gap-3 bg-terminal-surface/40 border border-terminal-border hover:border-terminal-cyan hover:bg-terminal-cyan/5 p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1 group">
-      <div class="w-12 h-12 rounded-full bg-terminal-darker flex items-center justify-center border border-terminal-border group-hover:border-terminal-cyan transition-colors">
-        <svg class="w-6 h-6 text-terminal-dim group-hover:text-terminal-cyan transition-colors" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M4 4a2 2 0 100 4 2 2 0 000-4zM4 14a2 2 0 100 4 2 2 0 000-4zM3 7h2v5H3V7zm9-3a9 9 0 019 9c0 .564-.047 1.12-.137 1.663-1.457-.669-3.015-1-4.573-1-4.336 0-8.024 2.576-9.744 6.256C2.832 15.66 2 12.993 2 10a9 9 0 019-9z"/>
-        </svg>
-      </div>
-      <span class="font-mono text-sm font-medium">RSS Feed</span>
-    </a>
-  </div>
-</section>
-
-<!-- CTA Section -->
-<section class="max-w-4xl mx-auto pb-12">
-  <div class="relative bg-terminal-darker border border-terminal-border rounded-2xl p-10 text-center overflow-hidden group">
-    <div class="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(74,222,128,0.05)_50%,transparent_75%)] bg-[length:250%_250%,100%_100%] animate-[gradient_3s_linear_infinite] opacity-0 group-hover:opacity-100 transition-opacity"></div>
-    <div class="relative z-10">
-      <div class="font-mono text-terminal-green mb-6">
-        <span class="inline-block w-12 h-12 border-2 border-terminal-green/30 rounded-full flex items-center justify-center mx-auto bg-terminal-green/10">
-          <span class="animate-ping absolute inline-flex h-8 w-8 rounded-full bg-terminal-green opacity-20"></span>
-          <span class="text-2xl">✦</span>
-        </span>
-      </div>
-      <h3 class="text-3xl font-bold text-terminal-light-surface mb-4 font-mono">Let's Build Something</h3>
-      <p class="text-terminal-dim mb-8 leading-relaxed max-w-2xl mx-auto">
-        Have an interesting idea, question, or just want to chat about code and photography? My inbox is always open.
-      </p>
-      <a href="mailto:hello@cosmic.dev" class="inline-flex items-center gap-2 bg-terminal-green text-terminal-darker hover:bg-terminal-cyan hover:text-terminal-darker font-mono font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(74,222,128,0.4)] hover:-translate-y-1">
-        <span>Say Hello</span>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
       </a>
-    </div>
+    {% endfor %}
   </div>
 </section>

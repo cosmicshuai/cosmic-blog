@@ -1,0 +1,53 @@
+<div class="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-bg/95 backdrop-blur-md font-mono text-[11px] leading-none">
+  <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-p/40 to-transparent"></div>
+
+  <div class="mx-auto flex h-8 max-w-screenframe items-center gap-4 px-4 sm:px-6">
+
+    <!-- Link status -->
+    <span class="flex shrink-0 items-center gap-1.5 text-p-dim">
+      <span class="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-ok animate-bar-pulse" aria-hidden="true"></span>
+      <span class="hidden sm:inline">ONLINE</span>
+    </span>
+
+    <span class="hidden text-line-2 lg:inline" aria-hidden="true">│</span>
+
+    <!-- Scroll meter -->
+    <span class="hidden shrink-0 items-center gap-2 text-p-dim lg:flex">
+      <span class="text-p-faint">SCR</span>
+      <span data-scroll-meter aria-hidden="true" class="tracking-[0.15em] text-p/70">░░░░░░░░░░</span>
+      <span data-scroll-pct class="w-9 text-right tabular-nums text-p">0%</span>
+    </span>
+
+    <span class="hidden text-line-2 lg:inline" aria-hidden="true">│</span>
+
+    <!-- Location -->
+    <span class="min-w-0 flex-1 truncate text-p-faint">
+      <span class="text-p/60" aria-hidden="true">▸</span>
+      {{ site.url | replace("https://", "") }}<span class="text-p-dim">{{ page.url }}</span>
+    </span>
+
+    <!-- Clock -->
+    <span data-clock class="hidden shrink-0 tabular-nums text-p-dim sm:inline">--:--:--Z</span>
+
+    <span class="hidden text-line-2 sm:inline" aria-hidden="true">│</span>
+
+    <!-- Controls -->
+    <button type="button" data-fx-toggle
+            class="shrink-0 text-p-dim transition-colors hover:text-p"
+            aria-pressed="false" title="Toggle CRT effects (f)">
+      FX:<span data-fx-state>ON</span>
+    </button>
+
+    <button type="button" data-theme-toggle
+            class="shrink-0 text-p-dim transition-colors hover:text-p"
+            title="Switch display mode (t)">
+      <span data-theme-state>CRT</span>
+    </button>
+
+    <button type="button" data-help-open
+            class="shrink-0 text-p-dim transition-colors hover:text-p"
+            title="Keyboard shortcuts (?)">
+      ?
+    </button>
+  </div>
+</div>

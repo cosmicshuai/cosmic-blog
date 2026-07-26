@@ -1,85 +1,61 @@
 ---
 layout: base.njk
-title: Tags
+title: Topics
+section: tags
 permalink: /tags/
+description: Index of every topic in the archive.
 ---
+{% from "macros.njk" import rule %}
 
-<!-- Terminal Hero -->
-<section class="mb-16">
-  <div class="terminal-window bg-terminal-surface/80 backdrop-blur-md border border-terminal-border rounded-xl overflow-hidden max-w-3xl mx-auto shadow-2xl relative group">
-    <div class="absolute inset-0 bg-gradient-to-br from-terminal-green/5 to-terminal-cyan/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-    <div class="terminal-chrome bg-terminal-darker/90 px-4 py-3 flex items-center justify-between border-b border-terminal-border">
-      <div class="flex items-center gap-2">
-        <div class="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-400 transition-colors"></div>
-        <div class="w-3 h-3 rounded-full bg-yellow-500/80 hover:bg-yellow-400 transition-colors"></div>
-        <div class="w-3 h-3 rounded-full bg-green-500/80 hover:bg-green-400 transition-colors"></div>
-      </div>
-      <div class="text-xs text-terminal-dim font-mono flex items-center gap-2">
-        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
-        ~/knowledge/tags
-      </div>
-    </div>
-    <div class="terminal-body p-6 md:p-10 font-mono text-center relative z-10">
-      <h1 class="text-3xl md:text-5xl font-bold mb-4 text-terminal-light-surface font-mono flex justify-center items-center gap-3">
-        <span class="text-terminal-green opacity-80">grep</span> Tags
-      </h1>
-      <p class="text-terminal-dim mt-4 max-w-xl mx-auto text-sm md:text-base border-l-2 border-terminal-green/30 pl-4 py-1 text-left">
-        Index of all subjects, thoughts, and technical deep-dives. System holds <span class="text-terminal-cyan font-bold">{{ collections.validTagList.length }}</span> distinct topics.
-      </p>
-    </div>
-  </div>
-</section>
+<header class="mb-12 pt-4">
+  <p class="mb-3 font-mono text-sm text-p-dim">
+    <span class="text-p glow-sm">$</span> grep -rl '#' ~/posts | sort | uniq -c
+  </p>
+  <h1 class="aberrate font-display text-[clamp(2.5rem,9vw,5.5rem)] uppercase leading-[0.9] text-p">Topics</h1>
+  <p class="mt-4 max-w-measure font-mono text-sm leading-relaxed text-p-dim">
+    <span class="text-p-hi">{{ collections.validTagList.length }}</span> distinct subjects
+    indexed across the archive. Size tracks record count.
+  </p>
+</header>
 
 {% set tagList = collections.validTagList %}
 
 {% if tagList.length === 0 %}
-  <div class="text-center py-24 bg-terminal-surface/30 backdrop-blur-sm rounded-2xl border border-dashed border-terminal-border relative overflow-hidden group max-w-4xl mx-auto">
-    <div class="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(74,222,128,0.02)_50%,transparent_75%)] bg-[length:250%_250%,100%_100%] animate-[gradient_3s_linear_infinite] opacity-0 group-hover:opacity-100 transition-opacity"></div>
-    <div class="relative z-10">
-      <div class="font-mono mb-4 text-xl">
-        <span class="text-terminal-green">$</span>
-        <span class="text-terminal-dim">grep -r "tags" .</span>
-      </div>
-      <p class="text-terminal-light-surface font-mono font-medium">No tags found in the system</p>
+  <div class="panel bracketed group">
+    <div class="panel-hd">
+      <span><span class="text-p/50" aria-hidden="true">▚▚</span> index</span>
+      <span class="text-p/50">0 entries</span>
+    </div>
+    <div class="panel-body">
+      <p class="font-display text-3xl text-p glow">INDEX EMPTY</p>
+      <p class="mt-3 max-w-measure font-mono text-sm text-p-dim">
+        Topics are derived from post front matter. Add
+        <code class="border border-line-2 px-1 py-0.5">tags: [thing]</code> to a post and it
+        registers here automatically.
+      </p>
+      <a href="/" class="btn mt-8"><span aria-hidden="true">←</span> back to index</a>
     </div>
   </div>
 {% else %}
-  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-5xl mx-auto pb-12">
-    {% for tag in tagList %}
-      {% set postCount = collections.posts | getByTag(tag) | length %}
-      <a href="/tags/{{ tag | slugify }}/" class="group relative block h-full" data-reveal style="transition-delay: {{ loop.index0 * 30 }}ms;">
-        <!-- Glow background -->
-        <div class="absolute -inset-0.5 bg-gradient-to-r from-terminal-green/50 to-terminal-cyan/50 rounded-2xl blur opacity-0 group-hover:opacity-40 transition duration-500"></div>
-        
-        <div class="relative h-full px-6 py-8 bg-terminal-surface/80 backdrop-blur-md rounded-xl border border-terminal-border group-hover:border-terminal-green/60 shadow-lg shadow-black/10 transition-all duration-300 transform group-hover:-translate-y-1.5 flex flex-col items-center justify-center gap-3 overflow-hidden">
-          
-          <!-- Subtle dot pattern inside card -->
-          <div class="absolute inset-0 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity" style="background-image: radial-gradient(currentColor 1px, transparent 1px); background-size: 10px 10px;"></div>
-
-          <div class="relative z-10 flex flex-col items-center">
-            <span class="text-terminal-green text-lg mb-1 opacity-50 group-hover:opacity-100 transition-opacity">#</span>
-            <span class="text-xl font-bold text-terminal-light-surface group-hover:text-terminal-green transition-colors text-center truncate w-full px-2">{{ tag }}</span>
-          </div>
-          
-          <div class="relative z-10 mt-2">
-            <span class="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-terminal-dim bg-terminal-darker px-3 py-1.5 rounded-full border border-terminal-border/50 group-hover:border-terminal-green/30 group-hover:text-terminal-cyan transition-colors shadow-inner">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-              {{ postCount }} {{ "post" if postCount == 1 else "posts" }}
-            </span>
-          </div>
-        </div>
-      </a>
-    {% endfor %}
+  <div class="panel" data-reveal>
+    <div class="panel-hd">
+      <span><span class="text-p/50" aria-hidden="true">▚▚</span> index</span>
+      <span class="text-p/50">{{ tagList.length }} entries</span>
+    </div>
+    <div class="panel-body">
+      <ul class="flex flex-wrap items-baseline gap-x-5 gap-y-3">
+        {% for tag in tagList %}
+          {% set postCount = collections.posts | getByTag(tag) | length %}
+          <li>
+            <a href="/tags/{{ tag | slugify }}/"
+               class="group inline-flex items-baseline gap-1.5 font-display leading-none text-p-dim transition-colors hover:text-p hover:glow
+                      {% if postCount > 6 %}text-5xl{% elif postCount > 3 %}text-4xl{% elif postCount > 1 %}text-3xl{% else %}text-2xl{% endif %}">
+              <span class="text-p/35 transition-colors group-hover:text-p" aria-hidden="true">#</span>{{ tag }}
+              <sup class="font-mono text-[11px] text-p-faint">{{ postCount }}</sup>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
   </div>
 {% endif %}
-
-<!-- Back to Posts -->
-<div class="mt-8 mb-16 flex justify-center">
-  <a href="/" class="group relative inline-flex items-center gap-2 px-6 py-3 bg-terminal-surface border border-terminal-border rounded-lg font-mono text-terminal-light-surface hover:text-terminal-darker hover:bg-terminal-green hover:border-terminal-green transition-all duration-300 shadow-lg active:scale-95 overflow-hidden">
-    <div class="absolute inset-0 bg-terminal-green/10 group-hover:bg-transparent transition-colors"></div>
-    <svg class="w-4 h-4 relative z-10 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-    </svg>
-    <span class="relative z-10">cd ~/home</span>
-  </a>
-</div>
