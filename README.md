@@ -40,7 +40,7 @@ and [Silkscreen](https://fonts.google.com/specimen/Silkscreen) for bitmap labels
 | Key | Action |
 |-----|--------|
 | `⌘K` / `Ctrl+K` / `/` | Command palette |
-| `g` then `h p t m r a` | Goto home / posts / tags / photos / projects / about |
+| `g` then `h p w t m r a` | Goto home / posts / wire / tags / photos / projects / about |
 | `j` / `k` | Scroll down / up |
 | `t` | Switch CRT ⇄ printout |
 | `f` | Toggle screen effects |
@@ -132,6 +132,60 @@ function hello() {
 ```
 </pre>
 
+## The wire (microblog)
+
+`/wire/` is a separate, short-form stream — a `tail -f` of a log rather than an
+archive. It has its own Atom feed at `/wire/feed.xml`, so subscribing to short
+dispatches doesn't fill a reader with long-form and vice versa.
+
+A packet is one Markdown file in `src/notes/`:
+
+```markdown
+---
+date: 2026-07-26T02:41:17Z
+---
+
+Amber won because of persistence, not brightness.
+```
+
+That's the whole format. Notes:
+
+- **`date` must be a full timestamp**, not just a day. Eleventy derives dates from
+  the `YYYY-MM-DD-` filename prefix and would otherwise floor every packet to
+  midnight, collapsing the ordering within a day.
+- Name files `YYYY-MM-DD-HHMMSS.md` by convention. The anchor id is derived from
+  the *timestamp*, not the filename, so renaming a file won't break a permalink.
+- Notes are `permalink: false` — they never get their own page. They render only
+  inside `/wire/`, its feed, the homepage, and the command palette, and each one
+  is addressable at `/wire/#n-20260726-024117`.
+- Bare URLs auto-link (markdown-it `linkify`), so you can paste a link and stop.
+- Wire notes deliberately do **not** appear in `/posts/`, the main feed, or the
+  tag index. They're a separate stream.
+
+Adding one is currently a commit. Publishing from a phone over iMessage is
+planned but not built — see below.
+
+### Publishing over iMessage (not yet implemented)
+
+Apple exposes no API for receiving iMessages; Messages for Business requires
+being an approved business and goes through a commercial provider. The only way
+to genuinely receive iMessage is a Mac that stays powered on, running an agent
+with Full Disk Access that polls `~/Library/Messages/chat.db` and commits new
+messages here.
+
+The intended shape, for when it gets built:
+
+- `/usr/bin/python3` as the agent interpreter — a stable, root-owned path, so
+  the Full Disk Access grant survives Homebrew and conda churn.
+- Watch `is_from_me = 1` messages carrying a configured prefix, so ordinary
+  conversation is never published by accident.
+- Fall back to decoding `attributedBody` when `message.text` is NULL, which is
+  common for messages composed on iOS and synced to the Mac.
+- Track the last processed `ROWID` in a state file and start from the current
+  max on first run, so it never backfills years of history.
+- Publish through the GitHub Contents API rather than a local clone — atomic,
+  no working-tree races, no push conflicts.
+
 ## Project Structure
 
 ```
@@ -154,9 +208,12 @@ blog/
 │   │   └── post.njk           # Post layout
 │   ├── assets/js/main.js      # All interactivity, vanilla
 │   ├── posts/                 # YYYY-MM-DD-*.md + posts.json defaults
+│   ├── notes/                 # Wire packets, permalink:false
 │   ├── styles/input.css       # Tailwind entry + theme variables
 │   ├── index.njk              # Homepage
 │   ├── posts.njk              # /posts/ archive
+│   ├── wire.njk               # /wire/ microblog
+│   ├── wire-feed.xml.njk      # /wire/feed.xml
 │   ├── tags.njk               # Topic index
 │   ├── tags-tag.njk           # Per-topic pages
 │   ├── about.njk              # whoami

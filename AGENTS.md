@@ -19,7 +19,8 @@ Theme is **COSMIC-OS**: a monochrome amber-phosphor workstation. `.dark` = CRT (
 - JS: single `src/assets/js/main.js` — all interactivity, vanilla, no dependencies.
 - Styles: `src/styles/input.css` -> `src/styles/output.css` (generated).
 - Content: `src/posts/YYYY-MM-DD-slug.md`; the date prefix is stripped by an `addPreprocessor` into `/{year}/{month}/{slug}/`. Defaults in `src/posts/posts.json`.
-- Pages: `index.njk`, `posts.njk` (`/posts/` archive), `tags.njk`, `tags-tag.njk`, `about.njk`, `projects.njk`, `photography.njk`.
+- Pages: `index.njk`, `posts.njk` (`/posts/` archive), `wire.njk` (`/wire/` microblog), `tags.njk`, `tags-tag.njk`, `about.njk`, `projects.njk`, `photography.njk`.
+- Wire packets: `src/notes/*.md`, defaults in `src/notes/notes.json`. Separate Atom feed at `wire-feed.xml.njk`.
 
 ## Conventions & Quirks
 
@@ -41,7 +42,13 @@ Theme is **COSMIC-OS**: a monochrome amber-phosphor workstation. `.dark` = CRT (
 
 **Tailwind content globs** include `./src/**/*.{html,njk,md,js}` and `./eleventy.config.js` (the code-block transform injects `.copy-btn` from there). Classes generated in JS must appear as literal strings in a scanned file.
 
-**Filters** in `eleventy.config.js`: `readableDate` (UTC-pinned — do not remove the `timeZone`, dates shift a day otherwise), `htmlDateString`, `dateYear`, `readingTime`, `wordCount`, `limit`, `head`, `getByTag`, plus `isValidTagSlug` / `slugifySafe` / `getValidTagList` which exclude `posts`/`all`/`tags`.
+**The wire is a second content stream, not a tag.** `src/notes/*.md` are `permalink: false` (page-less) and reach the reader only through `/wire/`, `/wire/feed.xml`, the homepage panel and the command palette. Do **not** give them `tags:` — it would pollute the topic index — and do **not** set `eleventyExcludeFromCollections`, which would hide them from `getFilteredByGlob` and empty the collection. Each note needs a **full timestamp** in `date:`; Eleventy derives dates from the `YYYY-MM-DD-` filename prefix and would otherwise floor every packet to midnight.
+
+**Note anchors come from the timestamp, not the filename.** Eleventy strips the `YYYY-MM-DD-` prefix off `fileSlug`, so `2026-07-26-081500.md` yields `081500` — two notes on different days at the same second would collide. Use the `noteId` filter (`20260726-081500`).
+
+**Nunjucks binds `|` looser than `+`.** `("/wire/#n-" + note.date | noteId)` pipes the *concatenated* string into the filter. Always parenthesise: `("/wire/#n-" + (note.date | noteId))`.
+
+**Filters** in `eleventy.config.js`: `readableDate` (UTC-pinned — do not remove the `timeZone`, dates shift a day otherwise), `htmlDateString`, `utcTime`, `dateYear`, `readingTime`, `wordCount`, `charCount`, `excerpt`, `pad`, `noteId`, `limit`, `head`, `getByTag`, plus `isValidTagSlug` / `slugifySafe` / `getValidTagList` which exclude `posts`/`all`/`tags`.
 
 **Images**: shortcodes `{% image %}` / `{% galleryImage %}` via `@11ty/eleventy-img`. Sources must exist at build time and `alt` is mandatory or the build throws.
 
@@ -49,7 +56,8 @@ Theme is **COSMIC-OS**: a monochrome amber-phosphor workstation. `.dark` = CRT (
 
 - `src/styles/output.css` must exist for anything to render; build order is CSS before Eleventy. Don't commit it.
 - **`eleventy --serve` does not reliably re-copy `output.css` when Tailwind rewrites it out-of-band.** If a style change appears not to apply, you are probably looking at stale CSS — restart the server, or verify against a real `npm run build` + a static server over `_site/`. Do not chase a phantom CSS bug first.
-- The repo currently has **zero posts**. Empty states on `/`, `/posts/` and `/tags/` are designed, not placeholders — keep them working. To verify post rendering, add a throwaway `.md`, check it, then delete it.
+- The repo currently has **zero posts and zero wire packets**. Empty states on `/`, `/posts/`, `/tags/` and `/wire/` are designed, not placeholders — keep them working. To verify rendering, add a throwaway `.md`, check it, then delete it.
+- iMessage ingestion for the wire is **designed but not built** (see README). Apple has no receive API; it needs an always-on Mac polling `~/Library/Messages/chat.db` with Full Disk Access. Don't promise it works.
 - The `.crt` overlay is `z-9998` and `pointer-events: none`; modals sit at `z-9999` and intentionally render *under* it so they get the same screen treatment.
 - Full-page screenshots misrepresent this design — the fixed rail, status line and CRT layers only compose correctly in viewport-sized captures.
 - CI: `.github/workflows/deploy.yml` — Node 24, `npm ci` → `npm run build` → `wrangler-action`, `directory: _site`. Needs `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_PROJECT_NAME`.

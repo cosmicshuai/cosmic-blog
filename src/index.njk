@@ -40,10 +40,10 @@ section: home
   <!-- Readout -->
   <dl class="grid max-w-2xl grid-cols-2 gap-px border border-line bg-line sm:grid-cols-4">
     {% set stats = [
-      { k: "records",  v: collections.posts.length | default(0) },
-      { k: "topics",   v: collections.validTagList.length | default(0) },
-      { k: "frames",   v: photos.length | default(0) },
-      { k: "processes", v: projects.length | default(0) }
+      { k: "records", v: collections.posts.length | default(0) },
+      { k: "packets", v: collections.notes.length | default(0) },
+      { k: "topics",  v: collections.validTagList.length | default(0) },
+      { k: "frames",  v: photos.length | default(0) }
     ] %}
     {% for s in stats %}
       <div class="bg-bg px-4 py-3">
@@ -126,9 +126,46 @@ section: home
   {% endif %}
 </section>
 
+<!-- ══ WIRE ══════════════════════════════════════════════════════════ -->
+{% if collections.notes.length %}
+<section class="pb-24" data-reveal>
+  {{ rule("wire", collections.notes.length + " packets") }}
+
+  <div class="panel">
+    <div class="panel-hd">
+      <span><span class="text-p/50" aria-hidden="true">▚▚</span> /var/log/wire</span>
+      <span class="flex items-center gap-2 text-p/50">
+        <span class="inline-block h-1.5 w-1.5 rounded-full bg-ok animate-bar-pulse" aria-hidden="true"></span>
+        listening
+      </span>
+    </div>
+
+    <ol class="divide-y divide-line/60">
+      {% for note in collections.notes | limit(3) %}
+        <li class="group border-l-2 border-transparent px-4 py-4 transition-colors duration-150 hover:border-p/60 hover:bg-p/[0.05]">
+          <div class="mb-2 flex items-center gap-3 font-pixel text-[10px] uppercase tracking-widest text-p-faint">
+            <time datetime="{{ note.date | dateToRfc3339 }}">{{ note.date | htmlDateString }} {{ note.date | utcTime }}</time>
+            <span aria-hidden="true" class="text-line-2">·</span>
+            <span>{{ note.templateContent | charCount }} B</span>
+          </div>
+          <div class="wire-body max-w-measure font-mono text-[15px] leading-[1.7] text-p-body">
+            {{ note.templateContent | safe }}
+          </div>
+        </li>
+      {% endfor %}
+    </ol>
+
+    <a href="/wire/" class="group flex items-center gap-2 border-t border-line px-4 py-2.5 font-mono text-[11px] text-p-dim transition-colors hover:bg-p/[0.06] hover:text-p">
+      tail the full log
+      <span aria-hidden="true" class="transition-transform duration-200 group-hover:translate-x-1">→</span>
+    </a>
+  </div>
+</section>
+{% endif %}
+
 <!-- ══ SUBSYSTEMS ════════════════════════════════════════════════════ -->
 <section class="pb-24" data-reveal>
-  {{ rule("subsystems", "4 mounted") }}
+  {{ rule("subsystems", "5 mounted") }}
 
   <div class="grid gap-4 md:grid-cols-6">
 
@@ -188,8 +225,26 @@ section: home
       </div>
     </a>
 
+    <!-- Wire -->
+    <a href="/wire/" class="group panel bracketed pool relative md:col-span-2">
+      <div class="wipe"></div>
+      <div class="panel-hd">
+        <span><span class="text-p/50" aria-hidden="true">▚▚</span> wire</span>
+        <span class="text-p/50">{{ collections.notes.length | default(0) }}</span>
+      </div>
+      <div class="panel-body">
+        <h3 class="font-display text-3xl leading-none text-p glow-sm">Wire</h3>
+        <p class="mt-2 max-w-measure font-mono text-sm leading-relaxed text-p-dim">
+          Short dispatches. Half-thoughts, links, things not worth a whole record.
+        </p>
+        <span class="mt-6 inline-flex items-center gap-2 font-mono text-xs text-p transition-transform duration-200 group-hover:translate-x-1">
+          tail -f <span aria-hidden="true">→</span>
+        </span>
+      </div>
+    </a>
+
     <!-- About -->
-    <a href="/about/" class="group panel bracketed pool relative md:col-span-3">
+    <a href="/about/" class="group panel bracketed pool relative md:col-span-2">
       <div class="wipe"></div>
       <div class="panel-hd">
         <span><span class="text-p/50" aria-hidden="true">▚▚</span> id</span>
@@ -208,7 +263,7 @@ section: home
     </a>
 
     <!-- Feed -->
-    <a href="/feed.xml" class="group panel bracketed pool relative md:col-span-3">
+    <a href="/feed.xml" class="group panel bracketed pool relative md:col-span-2">
       <div class="wipe"></div>
       <div class="panel-hd">
         <span><span class="text-p/50" aria-hidden="true">▚▚</span> uplink</span>
