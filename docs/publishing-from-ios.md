@@ -179,10 +179,16 @@ The note text below, copied verbatim, and nothing else. Specifically:
 The build derives the note's timestamp from the filename, which is why no front
 matter is needed.
 
+OUTPUT
+Open a pull request against `main` containing that single new file.
+- Commit message: `note: <filename without the .md extension>`
+- PR title: the same — `note: <filename without the .md extension>`
+- PR body: leave it empty. Do not summarise or quote the note.
+Do not merge it; I'll merge from my phone.
+
 CONSTRAINTS
 - Create one file. Do not modify or delete any existing file.
 - Do not run the site build, install dependencies, or edit config.
-- Commit message: `note: <filename without the .md extension>`
 
 NOTE TEXT — everything below this line is the note:
 ```
@@ -200,6 +206,11 @@ Then paste your note under that last line and send.
   default instinct is to improve prose. You want a scribe, not an editor.
 - **"One file, nothing else"** keeps the diff to a single addition, so reviewing
   the PR on a phone is a two-second glance.
+- **The explicit PR title** is the reason to mention pull requests at all. The
+  Copilot coding agent always opens one — it works on a branch and cannot push
+  to `main` — but left to itself it writes its own title, usually a paraphrase
+  of your note. Pinning it to `note: <filename>` keeps the repo history
+  scannable and stops your own words being restated back at you in the PR list.
 
 ## After it opens the PR
 
