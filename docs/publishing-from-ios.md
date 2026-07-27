@@ -6,18 +6,19 @@ about 40 seconds after you tap send.
 
 No server, no running Mac, no recurring cost.
 
-## Why the API and not the GitHub app
+## The note format
 
-The note format is unforgiving in one specific way: `date:` has to be a full
-timestamp. Eleventy only parses the `YYYY-MM-DD-` filename prefix, so a
-date-only value collapses every note that day onto `00:00:00Z` — and because
-anchor ids are derived from the timestamp, two same-day notes end up sharing a
-DOM id and every permalink but the first breaks.
+A note is a Markdown file in `src/notes/`. Front matter is optional:
 
-The build now recovers the time from a `YYYY-MM-DD-HHMMSS` filename when front
-matter omits `date`, so a hand-made file can't corrupt the archive. But the
-Shortcut sidesteps the question entirely by generating both, correctly, every
-time. That is the whole reason to prefer it over typing files by hand.
+- With `date:` in front matter, that timestamp is used.
+- Without it, the build recovers the time from a `YYYY-MM-DD-HHMMSS` filename,
+  **read as UTC**.
+
+So a bare `.md` file containing nothing but body text is a complete, valid note.
+That is what makes the Copilot fallback at the bottom of this page safe.
+
+The Shortcut still writes an explicit `date:` anyway, and that is deliberate —
+see the warning in step 3.
 
 ---
 
@@ -62,7 +63,14 @@ work; otherwise use an **Ask for Input** action with prompt `Note`.
 
 `XXX` emits the timezone offset (`-07:00`), so the instant is unambiguous even
 though the site renders times in UTC. Don't use a literal `Z` — that would
-claim local time is UTC and shift every note.
+claim local time is UTC and shift every note by your offset.
+
+> **Don't drop this step.** Front matter is optional in general, but not here.
+> Shortcuts formats dates in **local** time, so the filename from step 2 is
+> local — and the filename fallback reads filenames as **UTC**. Without an
+> explicit `date:`, every note would be shifted by your timezone offset. The
+> front matter is what pins the real instant. The Copilot fallback can omit it
+> only because `date -u` produces a genuinely UTC filename.
 
 **4 — Text** (the file contents). Exactly this, with the variables inserted:
 
@@ -136,3 +144,64 @@ Shortcut only appends, deliberately — it is a capture tool.
 **Times display in UTC.** A note posted at 10:15 local shows as `17:15Z`. If
 you'd rather see local time, that's a one-line change to the `utcTime` filter
 in `eleventy.config.js`.
+
+---
+
+# Fallback: the GitHub app + Copilot
+
+Useful when you don't have the Shortcut to hand, or you're on someone else's
+device. Slower — you wait for a runner and then merge a PR you wrote yourself —
+but it needs no token and nothing installed.
+
+In the GitHub mobile app, open an issue (or the Copilot pane), assign it to
+Copilot, and paste the prompt below with your note appended at the end.
+
+Because notes need **no front matter at all**, the only thing the agent has to
+get right is the filename — and it is told to read the clock rather than guess.
+
+## The prompt
+
+```text
+Create exactly one new file in `src/notes/` in this repository. Change nothing else.
+
+FILENAME
+Run this command and use its exact output as the filename, with `.md` appended:
+    date -u +%Y-%m-%d-%H%M%S
+Do not guess or infer the current time — run the command and read it. The
+timestamp must be UTC.
+
+FILE CONTENTS
+The note text below, copied verbatim, and nothing else. Specifically:
+- No YAML front matter. Do not add `---`, `date:`, `title:` or `tags:`.
+- No heading, no title line, no bullet wrapper, no code fence.
+- Do not reword, summarise, correct, translate or expand the text.
+- Leave URLs as bare URLs; they are auto-linked at build time.
+The build derives the note's timestamp from the filename, which is why no front
+matter is needed.
+
+CONSTRAINTS
+- Create one file. Do not modify or delete any existing file.
+- Do not run the site build, install dependencies, or edit config.
+- Commit message: `note: <filename without the .md extension>`
+
+NOTE TEXT — everything below this line is the note:
+```
+
+Then paste your note under that last line and send.
+
+## Why it's shaped that way
+
+- **"Run the command, don't guess"** is the load-bearing instruction. A model
+  asked for the current time will invent one, and a wrong timestamp puts the
+  note in the wrong position in the log.
+- **"No front matter"** removes the only fiddly part of the format. A bare `.md`
+  file with body text is a complete, valid note.
+- **"Verbatim"** and the explicit don't-reword list exist because a coding agent's
+  default instinct is to improve prose. You want a scribe, not an editor.
+- **"One file, nothing else"** keeps the diff to a single addition, so reviewing
+  the PR on a phone is a two-second glance.
+
+## After it opens the PR
+
+Check the diff is one added file with the right timestamp, then merge from the
+app. Cloudflare deploys on merge, same ~40 seconds as the Shortcut.
