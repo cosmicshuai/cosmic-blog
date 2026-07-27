@@ -726,55 +726,55 @@ h4:hover .anchor-link,
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   WIRE — microblog payloads. Deliberately not `.prose`: a packet is a
-   couple of sentences, so it only needs paragraphs, links and inline code.
+   NOTES — microblog bodies. Deliberately not `.prose`: a note is a couple
+   of sentences, so it only needs paragraphs, links and inline code.
    ═══════════════════════════════════════════════════════════════════════ */
 
-.wire-body > * + * {
+.note-body > * + * {
   margin-top: 0.75rem;
 }
 
-.wire-body a {
+.note-body a {
   color: rgb(var(--c-p));
   text-decoration: none;
   border-bottom: 1px dashed rgb(var(--c-p) / 0.55);
   overflow-wrap: anywhere;
   transition: background 0.18s ease, border-color 0.18s ease;
 }
-.wire-body a:hover {
+.note-body a:hover {
   background: rgb(var(--c-p) / 0.16);
   border-bottom-style: solid;
 }
 
-.wire-body code {
+.note-body code {
   @apply px-1 py-0.5 text-[0.9em] border;
   border-color: rgb(var(--c-p) / 0.28);
   background: rgb(var(--c-p) / 0.08);
   color: rgb(var(--c-p));
 }
 
-.wire-body strong {
+.note-body strong {
   color: rgb(var(--c-p-hi));
   font-weight: 600;
 }
 
-.wire-body ul,
-.wire-body ol {
+.note-body ul,
+.note-body ol {
   padding-left: 1.25rem;
 }
-.wire-body ul {
+.note-body ul {
   list-style: none;
 }
-.wire-body ul > li::before {
+.note-body ul > li::before {
   content: '▸ ';
   color: rgb(var(--c-p) / 0.7);
   margin-left: -1.25rem;
 }
-.wire-body ol {
+.note-body ol {
   list-style: decimal;
 }
 
-.wire-body blockquote {
+.note-body blockquote {
   padding-left: 0.875rem;
   border-left: 2px solid rgb(var(--c-p) / 0.5);
   color: rgb(var(--c-p-hi));

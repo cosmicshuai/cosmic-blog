@@ -63,7 +63,7 @@
         { k: "⌘K", alt: "/", d: "open command palette" },
         { k: "g h", d: "goto home" },
         { k: "g p", d: "goto posts archive" },
-        { k: "g w", d: "goto wire" },
+        { k: "g n", d: "goto notes" },
         { k: "g t", d: "goto tag index" },
         { k: "g m", d: "goto photography" },
         { k: "g r", d: "goto projects" },
@@ -92,10 +92,10 @@
   "pages": {{ nav | dump | safe }},
   "posts": [{% for post in collections.posts %}{"label":{{ post.data.title | dump | safe }},"url":{{ post.url | dump | safe }},"hint":{{ (post.data.description or "transmission") | dump | safe }}}{% if not loop.last %},{% endif %}{% endfor %}],
   "tags": [{% for tag in collections.validTagList %}{"label":{{ ("#" + tag) | dump | safe }},"url":{{ ("/tags/" + (tag | slugify) + "/") | dump | safe }},"hint":"topic"}{% if not loop.last %},{% endif %}{% endfor %}],
-  "notes": [{% for note in collections.notes | limit(200) %}{"label":{{ (note.templateContent | excerpt(80)) | dump | safe }},"url":{{ ("/wire/#n-" + (note.date | noteId)) | dump | safe }},"hint":{{ ((note.date | htmlDateString) + " " + (note.date | utcTime)) | dump | safe }}}{% if not loop.last %},{% endif %}{% endfor %}],
+  "notes": [{% for note in collections.notes | limit(200) %}{"label":{{ (note.templateContent | excerpt(80)) | dump | safe }},"url":{{ ("/notes/#n-" + (note.date | noteId)) | dump | safe }},"hint":{{ ((note.date | htmlDateString) + " " + (note.date | utcTime)) | dump | safe }}}{% if not loop.last %},{% endif %}{% endfor %}],
   "extras": [
     { "label": "RSS FEED", "url": "/feed.xml", "hint": "long-form Atom feed" },
-    { "label": "WIRE FEED", "url": "/wire/feed.xml", "hint": "microblog Atom feed" }
+    { "label": "NOTES FEED", "url": "/notes/feed.xml", "hint": "microblog Atom feed" }
   ]
 }
 </script>

@@ -41,7 +41,7 @@ section: home
   <dl class="grid max-w-2xl grid-cols-2 gap-px border border-line bg-line sm:grid-cols-4">
     {% set stats = [
       { k: "records", v: collections.posts.length | default(0) },
-      { k: "packets", v: collections.notes.length | default(0) },
+      { k: "notes",   v: collections.notes.length | default(0) },
       { k: "topics",  v: collections.validTagList.length | default(0) },
       { k: "frames",  v: photos.length | default(0) }
     ] %}
@@ -56,6 +56,9 @@ section: home
   <div class="mt-10 flex flex-wrap gap-3">
     <a href="/posts/" class="btn">
       <span aria-hidden="true">▸</span> read the archive
+    </a>
+    <a href="/notes/" class="btn-ghost">
+      <span aria-hidden="true">▸</span> browse notes
     </a>
     <button type="button" data-cmdk-open class="btn-ghost">
       <span aria-hidden="true">⌘</span> open command palette
@@ -126,14 +129,14 @@ section: home
   {% endif %}
 </section>
 
-<!-- ══ WIRE ══════════════════════════════════════════════════════════ -->
+<!-- ══ NOTES ═════════════════════════════════════════════════════════ -->
 {% if collections.notes.length %}
 <section class="pb-24" data-reveal>
-  {{ rule("wire", collections.notes.length + " packets") }}
+  {{ rule("notes", collections.notes.length + " entries") }}
 
   <div class="panel">
     <div class="panel-hd">
-      <span><span class="text-p/50" aria-hidden="true">▚▚</span> /var/log/wire</span>
+      <span><span class="text-p/50" aria-hidden="true">▚▚</span> /var/log/notes</span>
       <span class="flex items-center gap-2 text-p/50">
         <span class="inline-block h-1.5 w-1.5 rounded-full bg-ok animate-bar-pulse" aria-hidden="true"></span>
         listening
@@ -148,14 +151,14 @@ section: home
             <span aria-hidden="true" class="text-line-2">·</span>
             <span>{{ note.templateContent | charCount }} B</span>
           </div>
-          <div class="wire-body max-w-measure font-mono text-[15px] leading-[1.7] text-p-body">
+          <div class="note-body max-w-measure font-mono text-[15px] leading-[1.7] text-p-body">
             {{ note.templateContent | safe }}
           </div>
         </li>
       {% endfor %}
     </ol>
 
-    <a href="/wire/" class="group flex items-center gap-2 border-t border-line px-4 py-2.5 font-mono text-[11px] text-p-dim transition-colors hover:bg-p/[0.06] hover:text-p">
+    <a href="/notes/" class="group flex items-center gap-2 border-t border-line px-4 py-2.5 font-mono text-[11px] text-p-dim transition-colors hover:bg-p/[0.06] hover:text-p">
       tail the full log
       <span aria-hidden="true" class="transition-transform duration-200 group-hover:translate-x-1">→</span>
     </a>
@@ -225,17 +228,17 @@ section: home
       </div>
     </a>
 
-    <!-- Wire -->
-    <a href="/wire/" class="group panel bracketed pool relative md:col-span-2">
+    <!-- Notes -->
+    <a href="/notes/" class="group panel bracketed pool relative md:col-span-2">
       <div class="wipe"></div>
       <div class="panel-hd">
-        <span><span class="text-p/50" aria-hidden="true">▚▚</span> wire</span>
+        <span><span class="text-p/50" aria-hidden="true">▚▚</span> notes</span>
         <span class="text-p/50">{{ collections.notes.length | default(0) }}</span>
       </div>
       <div class="panel-body">
-        <h3 class="font-display text-3xl leading-none text-p glow-sm">Wire</h3>
+        <h3 class="font-display text-3xl leading-none text-p glow-sm">Notes</h3>
         <p class="mt-2 max-w-measure font-mono text-sm leading-relaxed text-p-dim">
-          Short dispatches. Half-thoughts, links, things not worth a whole record.
+          Short notes. Half-thoughts, links, things not worth a whole record.
         </p>
         <span class="mt-6 inline-flex items-center gap-2 font-mono text-xs text-p transition-transform duration-200 group-hover:translate-x-1">
           tail -f <span aria-hidden="true">→</span>

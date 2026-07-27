@@ -27,6 +27,7 @@ and [Silkscreen](https://fonts.google.com/specimen/Silkscreen) for bitmap labels
 - ⌨️ Command palette (<kbd>⌘K</kbd>), `g`-prefixed goto keys, `j`/`k` scrolling,
   <kbd>?</kbd> keymap — see the status bar
 - 🔌 Power-on self test on the first page of a session
+- 📝 `/notes/` microblog — a short-form stream with its own feed
 - 🏷️ Tags, archive listing, and per-topic indexes rendered as `ls -la` output
 - 📑 Auto-generated table of contents via `[[toc]]`
 - 🖼️ Responsive WebP/JPEG images; gallery renders amber duotone until focused
@@ -40,7 +41,7 @@ and [Silkscreen](https://fonts.google.com/specimen/Silkscreen) for bitmap labels
 | Key | Action |
 |-----|--------|
 | `⌘K` / `Ctrl+K` / `/` | Command palette |
-| `g` then `h p w t m r a` | Goto home / posts / wire / tags / photos / projects / about |
+| `g` then `h p n t m r a` | Goto home / posts / notes / tags / photos / projects / about |
 | `j` / `k` | Scroll down / up |
 | `t` | Switch CRT ⇄ printout |
 | `f` | Toggle screen effects |
@@ -132,13 +133,13 @@ function hello() {
 ```
 </pre>
 
-## The wire (microblog)
+## Notes (microblog)
 
-`/wire/` is a separate, short-form stream — a `tail -f` of a log rather than an
-archive. It has its own Atom feed at `/wire/feed.xml`, so subscribing to short
-dispatches doesn't fill a reader with long-form and vice versa.
+`/notes/` is a separate, short-form stream — a `tail -f` of a log rather than an
+archive. It has its own Atom feed at `/notes/feed.xml`, so subscribing to short
+notes doesn't fill a reader with long-form and vice versa.
 
-A packet is one Markdown file in `src/notes/`:
+A note is one Markdown file in `src/notes/`:
 
 ```markdown
 ---
@@ -151,15 +152,15 @@ Amber won because of persistence, not brightness.
 That's the whole format. Notes:
 
 - **`date` must be a full timestamp**, not just a day. Eleventy derives dates from
-  the `YYYY-MM-DD-` filename prefix and would otherwise floor every packet to
+  the `YYYY-MM-DD-` filename prefix and would otherwise floor every note to
   midnight, collapsing the ordering within a day.
 - Name files `YYYY-MM-DD-HHMMSS.md` by convention. The anchor id is derived from
   the *timestamp*, not the filename, so renaming a file won't break a permalink.
 - Notes are `permalink: false` — they never get their own page. They render only
-  inside `/wire/`, its feed, the homepage, and the command palette, and each one
-  is addressable at `/wire/#n-20260726-024117`.
+  inside `/notes/`, its feed, the homepage, and the command palette, and each one
+  is addressable at `/notes/#n-20260726-024117`.
 - Bare URLs auto-link (markdown-it `linkify`), so you can paste a link and stop.
-- Wire notes deliberately do **not** appear in `/posts/`, the main feed, or the
+- Notes deliberately do **not** appear in `/posts/`, the main feed, or the
   tag index. They're a separate stream.
 
 Adding one is currently a commit. Publishing from a phone over iMessage is
@@ -208,12 +209,12 @@ blog/
 │   │   └── post.njk           # Post layout
 │   ├── assets/js/main.js      # All interactivity, vanilla
 │   ├── posts/                 # YYYY-MM-DD-*.md + posts.json defaults
-│   ├── notes/                 # Wire packets, permalink:false
+│   ├── notes/                 # Note entries, permalink:false
 │   ├── styles/input.css       # Tailwind entry + theme variables
 │   ├── index.njk              # Homepage
 │   ├── posts.njk              # /posts/ archive
-│   ├── wire.njk               # /wire/ microblog
-│   ├── wire-feed.xml.njk      # /wire/feed.xml
+│   ├── notes.njk              # /notes/ microblog
+│   ├── notes-feed.xml.njk     # /notes/feed.xml
 │   ├── tags.njk               # Topic index
 │   ├── tags-tag.njk           # Per-topic pages
 │   ├── about.njk              # whoami
