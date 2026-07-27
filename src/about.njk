@@ -8,11 +8,11 @@ description: Operator record, hardware inventory and contact channels.
 
 <!-- ══ IDENTITY ══════════════════════════════════════════════════════ -->
 <header class="mb-16 pt-4">
-  <p class="mb-3 font-mono text-sm text-p-dim">
-    <span class="text-p glow-sm">$</span> whoami &amp;&amp; finger {{ site.author }}
+  <p class="mb-3 font-mono text-sm text-ink-dim">
+    <span class="text-signal">$</span> whoami &amp;&amp; finger {{ site.author }}
   </p>
-  <h1 class="aberrate font-display text-[clamp(2.5rem,9vw,5.5rem)] uppercase leading-[0.9] text-p">{{ site.author }}</h1>
-  <p class="mt-4 font-mono text-sm uppercase tracking-widest text-p-dim">{{ site.role }}</p>
+  <h1 class="title-card text-[clamp(2.5rem,9vw,5.5rem)] leading-[0.92]">{{ site.author }}</h1>
+  <p class="mt-4 font-mono text-sm uppercase tracking-widest text-ink-dim">{{ site.role }}</p>
 </header>
 
 <section class="mb-20 grid items-start gap-4 md:grid-cols-6" data-reveal>
@@ -20,8 +20,8 @@ description: Operator record, hardware inventory and contact channels.
   <!-- passwd entry -->
   <div class="panel md:col-span-4">
     <div class="panel-hd">
-      <span><span class="text-p/50" aria-hidden="true">▚▚</span> /etc/passwd</span>
-      <span class="text-p/50">read-only</span>
+      <span><span class="text-signal/50" aria-hidden="true">▚▚</span> /etc/passwd</span>
+      <span class="text-signal/50">read-only</span>
     </div>
     <div class="panel-body">
       <dl class="font-mono text-sm">
@@ -34,8 +34,8 @@ description: Operator record, hardware inventory and contact channels.
         ] %}
         {% for f in fields %}
           <div class="flex gap-4 border-b border-line/60 py-2 last:border-b-0">
-            <dt class="w-20 shrink-0 text-p-faint">{{ f.k }}</dt>
-            <dd class="text-p-hi">{{ f.v }}</dd>
+            <dt class="w-20 shrink-0 text-ink-faint">{{ f.k }}</dt>
+            <dd class="text-ink-hi">{{ f.v }}</dd>
           </div>
         {% endfor %}
       </dl>
@@ -45,15 +45,15 @@ description: Operator record, hardware inventory and contact channels.
   <!-- Avatar plate -->
   <div class="panel bracketed group md:col-span-2">
     <div class="panel-hd">
-      <span><span class="text-p/50" aria-hidden="true">▚▚</span> avatar</span>
-      <span class="text-p/50">1-bit</span>
+      <span><span class="text-signal/50" aria-hidden="true">▚▚</span> avatar</span>
+      <span class="text-signal/50">1-bit</span>
     </div>
     <div class="pool flex aspect-square items-center justify-center bg-bg-deep/50">
-      <span class="aberrate font-display text-[8rem] leading-none text-p glow" aria-hidden="true">
+      <span class="title-card text-[7rem] leading-none" aria-hidden="true">
         {{ site.author | first | upper }}
       </span>
     </div>
-    <div class="border-t border-line px-3 py-2 font-mono text-[11px] text-p-faint">
+    <div class="border-t border-line px-3 py-2 font-mono text-[11px] text-ink-faint">
       <span class="inline-block h-1.5 w-1.5 rounded-full bg-ok align-middle animate-bar-pulse" aria-hidden="true"></span>
       logged in — tty1
     </div>
@@ -63,7 +63,7 @@ description: Operator record, hardware inventory and contact channels.
 <!-- ══ BIO ═══════════════════════════════════════════════════════════ -->
 <section class="mb-20" data-reveal>
   {{ rule("readme", "~/README.md") }}
-  <div class="max-w-measure space-y-5 font-mono text-sm leading-[1.85] text-p-body">
+  <div class="max-w-measure space-y-5 font-mono text-sm leading-[1.85] text-ink">
     <p>
       I build software and take pictures. Days go to systems that have to stay up —
       APIs, data paths, the unglamorous plumbing that everything else stands on.
@@ -95,12 +95,12 @@ description: Operator record, hardware inventory and contact channels.
     {% for group in kit %}
       <div class="group panel bracketed pool">
         <div class="panel-hd">
-          <span><span class="text-p/50" aria-hidden="true">▚▚</span> {{ group.label }}</span>
+          <span><span class="text-signal/50" aria-hidden="true">▚▚</span> {{ group.label }}</span>
         </div>
         <ul class="panel-body space-y-1.5 font-mono text-sm">
           {% for item in group.items %}
-            <li class="flex items-baseline gap-2 text-p-dim">
-              <span class="text-p/40" aria-hidden="true">▸</span>{{ item }}
+            <li class="flex items-baseline gap-2 text-ink-dim">
+              <span class="text-signal/40" aria-hidden="true">▸</span>{{ item }}
             </li>
           {% endfor %}
         </ul>
@@ -121,14 +121,14 @@ description: Operator record, hardware inventory and contact channels.
     ] %}
     {% for ch in channels %}
       <a href="{{ ch.url }}" {% if ch.label == "github" %}rel="me noopener"{% endif %}
-         class="group panel bracketed pool block transition-colors hover:border-p/50">
+         class="group panel bracketed pool block transition-colors hover:border-signal/50">
         <div class="panel-hd">
-          <span><span class="text-p/50" aria-hidden="true">▚▚</span> {{ ch.label }}</span>
-          <span class="text-p/50 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">→</span>
+          <span><span class="text-signal/50" aria-hidden="true">▚▚</span> {{ ch.label }}</span>
+          <span class="text-signal/50 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">→</span>
         </div>
         <div class="panel-body">
-          <p class="break-all font-mono text-sm text-p-hi transition-colors group-hover:text-p">{{ ch.value }}</p>
-          <p class="mt-2 font-mono text-[11px] text-p-faint">{{ ch.note }}</p>
+          <p class="break-all font-mono text-sm text-ink-hi transition-colors group-hover:text-signal">{{ ch.value }}</p>
+          <p class="mt-2 font-mono text-[11px] text-ink-faint">{{ ch.note }}</p>
         </div>
       </a>
     {% endfor %}

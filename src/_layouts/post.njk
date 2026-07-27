@@ -2,29 +2,29 @@
 layout: base.njk
 ---
 
-<!-- Reading progress — a thin phosphor trace at the top of the tube. -->
+<!-- Reading progress — a thin trace across the top of the viewport. -->
 <div class="fixed inset-x-0 top-0 z-[60] h-[2px] bg-transparent" aria-hidden="true">
-  <div id="progress" class="h-full w-0 bg-p shadow-bloom transition-[width] duration-100 ease-out"></div>
+  <div id="progress" class="h-full w-0 bg-signal transition-[width] duration-100 ease-out"></div>
 </div>
 
 <article class="pt-2">
 
   <!-- ══ FILE HEADER ═══════════════════════════════════════════════ -->
   <header class="mb-14">
-    <nav class="mb-6 font-mono text-xs text-p-faint" aria-label="Breadcrumb">
-      <a href="/" class="transition-colors hover:text-p">~</a>
+    <nav class="mb-6 font-mono text-xs text-ink-faint" aria-label="Breadcrumb">
+      <a href="/" class="transition-colors hover:text-signal">~</a>
       <span class="text-line-2" aria-hidden="true">/</span>
-      <a href="/posts/" class="transition-colors hover:text-p">posts</a>
+      <a href="/posts/" class="transition-colors hover:text-signal">posts</a>
       <span class="text-line-2" aria-hidden="true">/</span>
-      <span class="text-p-dim">{{ page.fileSlug }}.md</span>
+      <span class="text-ink-dim">{{ page.fileSlug }}.md</span>
     </nav>
 
-    <h1 class="aberrate max-w-[22ch] font-display text-[clamp(2.25rem,7vw,4.5rem)] leading-[0.95] text-p">
+    <h1 class="title-card max-w-[24ch] text-[clamp(2.25rem,7vw,4.5rem)] leading-[1.05]">
       {{ title }}
     </h1>
 
     {% if description %}
-      <p class="mt-5 max-w-measure font-mono text-base leading-relaxed text-p-dim">{{ description }}</p>
+      <p class="mt-5 max-w-measure font-mono text-base leading-relaxed text-ink-dim">{{ description }}</p>
     {% endif %}
 
     <!-- stat(1) -->
@@ -37,8 +37,8 @@ layout: base.njk
       ] %}
       {% for m in meta %}
         <div class="bg-bg px-3 py-2.5">
-          <dt class="font-pixel text-[10px] uppercase tracking-widest text-p-faint">{{ m.k }}</dt>
-          <dd class="mt-1 font-mono text-sm text-p-hi">{{ m.v }}</dd>
+          <dt class="font-mono text-[10px] uppercase tracking-widest text-ink-faint">{{ m.k }}</dt>
+          <dd class="mt-1 font-mono text-sm text-ink-hi">{{ m.v }}</dd>
         </div>
       {% endfor %}
     </dl>
@@ -62,22 +62,22 @@ layout: base.njk
   <!-- ══ EOF ═══════════════════════════════════════════════════════ -->
   <footer class="mt-20 border-t border-line pt-10">
 
-    <p class="mb-10 font-mono text-sm text-p-faint">
-      <span class="text-p/60">$</span> EOF — {{ content | wordCount }} words, {{ content | readingTime }} min
+    <p class="mb-10 font-mono text-sm text-ink-faint">
+      <span class="text-signal/60">$</span> EOF — {{ content | wordCount }} words, {{ content | readingTime }} min
     </p>
 
     <div class="panel bracketed group mb-10">
       <div class="panel-hd">
-        <span><span class="text-p/50" aria-hidden="true">▚▚</span> author</span>
-        <span class="text-p/50">uid 1000</span>
+        <span><span class="text-signal/50" aria-hidden="true">▚▚</span> author</span>
+        <span class="text-signal/50">uid 1000</span>
       </div>
       <div class="panel-body pool flex items-center gap-5">
-        <span aria-hidden="true" class="flex h-14 w-14 shrink-0 items-center justify-center border border-line bg-bg-deep/50 font-display text-3xl leading-none text-p glow-sm">
+        <span aria-hidden="true" class="flex h-14 w-14 shrink-0 items-center justify-center border border-line bg-bg-deep/50 crawl-type text-2xl leading-none text-signal">
           {{ site.author | first | upper }}
         </span>
         <span class="min-w-0">
-          <a href="/about/" class="block font-mono text-sm text-p-hi transition-colors hover:text-p">{{ site.author }}</a>
-          <span class="mt-0.5 block font-mono text-xs text-p-dim">{{ site.role }}</span>
+          <a href="/about/" class="block font-mono text-sm text-ink-hi transition-colors hover:text-signal">{{ site.author }}</a>
+          <span class="mt-0.5 block font-mono text-xs text-ink-dim">{{ site.role }}</span>
         </span>
         <a href="/feed.xml" class="btn-ghost ml-auto hidden shrink-0 sm:inline-flex">subscribe</a>
       </div>
@@ -89,16 +89,16 @@ layout: base.njk
     {% if previousPost or nextPost %}
       <nav class="grid gap-4 sm:grid-cols-2" aria-label="Adjacent records">
         {% if previousPost %}
-          <a href="{{ previousPost.url }}" class="group panel bracketed pool block p-4 transition-colors hover:border-p/50">
-            <span class="font-pixel text-[10px] uppercase tracking-widest text-p-faint">◂ previous</span>
-            <span class="mt-2 block font-mono text-sm text-p-hi transition-colors group-hover:text-p">{{ previousPost.data.title }}</span>
+          <a href="{{ previousPost.url }}" class="group panel bracketed pool block p-4 transition-colors hover:border-signal/50">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-ink-faint">◂ previous</span>
+            <span class="mt-2 block font-mono text-sm text-ink-hi transition-colors group-hover:text-signal">{{ previousPost.data.title }}</span>
           </a>
         {% else %}<span class="hidden sm:block"></span>{% endif %}
 
         {% if nextPost %}
-          <a href="{{ nextPost.url }}" class="group panel bracketed pool block p-4 text-right transition-colors hover:border-p/50">
-            <span class="font-pixel text-[10px] uppercase tracking-widest text-p-faint">next ▸</span>
-            <span class="mt-2 block font-mono text-sm text-p-hi transition-colors group-hover:text-p">{{ nextPost.data.title }}</span>
+          <a href="{{ nextPost.url }}" class="group panel bracketed pool block p-4 text-right transition-colors hover:border-signal/50">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-ink-faint">next ▸</span>
+            <span class="mt-2 block font-mono text-sm text-ink-hi transition-colors group-hover:text-signal">{{ nextPost.data.title }}</span>
           </a>
         {% endif %}
       </nav>

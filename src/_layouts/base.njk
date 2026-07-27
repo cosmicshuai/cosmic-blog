@@ -1,21 +1,17 @@
 <!DOCTYPE html>
-<html lang="{{ site.language | default('en') }}" class="no-js">
+<html lang="{{ site.language | default('en') }}" class="no-js dark">
 {% include "head.njk" %}
-<body class="min-h-screen bg-bg font-mono text-p-body">
+<!-- No background on <body>: html supplies the base colour, and an
+     opaque body background would paint over the negative-z starfield. -->
+<body class="min-h-screen font-sans text-ink antialiased">
 
   {% include "overlays.njk" %}
 
-  <!-- The tube. Purely decorative, never intercepts input. -->
-  <div class="crt" aria-hidden="true">
-    <div class="crt-roll"></div>
-    <div class="crt-scan"></div>
-    <div class="crt-grille"></div>
-    <div class="crt-glass"></div>
-    <div class="crt-flicker"></div>
-    <div class="crt-vignette"></div>
-  </div>
+  <!-- Static starfield. Purely decorative, sits behind content, never
+       overlaps text and never moves. -->
+  <div class="starfield" aria-hidden="true"></div>
 
-  <a href="#content" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10001] focus:border focus:border-p focus:bg-bg focus:px-4 focus:py-2 focus:font-mono focus:text-sm focus:text-p">
+  <a href="#content" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10001] focus:border focus:border-signal focus:bg-bg focus:px-4 focus:py-2 focus:font-mono focus:text-sm focus:text-signal">
     skip to content
   </a>
 

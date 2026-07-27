@@ -16,116 +16,59 @@ function isTyping(el) {
   return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable;
 }
 
-/* ── POWER-ON SELF TEST ──────────────────────────────────────────────── */
+/* ── TITLE CARD ──────────────────────────────────────────────────────
+   Plays once per session on the first page. Two fades and out, ~2.2s,
+   skippable with any key or click. No motion after it leaves. */
 
-function bootSequence() {
+function titleCard() {
   const boot = $('#boot');
   if (!boot) return;
 
-  // The head script already decided this session shouldn't boot.
+  // The head script already decided this session shouldn't play.
   if (root.classList.contains('booted')) {
     boot.remove();
     return;
   }
 
-  const index = readNavIndex();
-  const lines = [
-    ['COSMIC-OS 2.0.0', 'POWER-ON SELF TEST'],
-    ['CPU', 'OK'],
-    ['MEMORY', '640K OK'],
-    ['PHOSPHOR', 'AMBER P3'],
-    ['LINK', location.host || 'localhost'],
-    ['MOUNT /posts', (index.posts.length || 0) + ' RECORDS'],
-    ['MOUNT /notes', (index.notes.length || 0) + ' NOTES'],
-    ['READY.', ''],
-  ];
-
-  const out = $('[data-boot-lines]', boot);
-  let i = 0;
+  const line = $('[data-boot-line]', boot);
+  const mark = $('[data-boot-mark]', boot);
   let finished = false;
+  const timers = [];
 
   const finish = () => {
     if (finished) return;
     finished = true;
+    timers.forEach(clearTimeout);
     try {
       sessionStorage.setItem('cosmic:booted', '1');
     } catch (e) {
-      /* private mode — boot simply plays again */
+      /* private mode — the card simply plays again */
     }
     boot.classList.add('done');
     root.classList.add('booted');
-    window.removeEventListener('keydown', skip, true);
-    window.removeEventListener('pointerdown', skip, true);
-    setTimeout(() => boot.remove(), 320);
+    window.removeEventListener('keydown', finish, true);
+    window.removeEventListener('pointerdown', finish, true);
+    setTimeout(() => boot.remove(), 460);
   };
 
-  const skip = () => finish();
-  window.addEventListener('keydown', skip, true);
-  window.addEventListener('pointerdown', skip, true);
+  window.addEventListener('keydown', finish, true);
+  window.addEventListener('pointerdown', finish, true);
 
-  const step = () => {
-    if (finished) return;
-    if (i >= lines.length) {
-      setTimeout(finish, 340);
-      return;
-    }
-    const [label, value] = lines[i];
-    const row = document.createElement('div');
-    row.className = 'flex gap-3';
-    const dots = '.'.repeat(Math.max(2, 22 - label.length));
-    row.innerHTML =
-      '<span class="text-p-hi"></span><span class="text-p/30"></span><span class="text-p"></span>';
-    row.children[0].textContent = label;
-    row.children[1].textContent = value ? dots : '';
-    row.children[2].textContent = value;
-    out.appendChild(row);
-    i++;
-    setTimeout(step, 95);
+  const show = (el, delay) => {
+    if (!el) return;
+    timers.push(
+      setTimeout(() => {
+        el.style.transition = 'opacity 700ms ease-out';
+        el.style.opacity = '1';
+      }, delay)
+    );
   };
 
+  show(line, 120);
+  show(mark, 1100);
+  timers.push(setTimeout(finish, 2600));
   // Fail-safe: never let a scripting error leave the overlay up.
-  setTimeout(finish, 4000);
-  step();
-}
-
-/* ── DISPLAY MODE + SCREEN EFFECTS ───────────────────────────────────── */
-
-function displayControls() {
-  const themeState = $('[data-theme-state]');
-  const fxState = $('[data-fx-state]');
-  const fxReadout = $('[data-fx-readout]');
-  const fxBtn = $('[data-fx-toggle]');
-
-  const sync = () => {
-    const crt = root.classList.contains('dark');
-    const fxOn = !root.classList.contains('fx-off');
-    if (themeState) themeState.textContent = crt ? 'CRT' : 'PRT';
-    if (fxState) fxState.textContent = fxOn ? 'ON' : 'OFF';
-    if (fxBtn) fxBtn.setAttribute('aria-pressed', String(fxOn));
-    if (fxReadout) fxReadout.textContent = fxOn ? (crt ? 'amber P3' : 'fanfold') : 'flat';
-  };
-
-  const toggleTheme = () => {
-    const crt = root.classList.toggle('dark');
-    try {
-      localStorage.setItem('cosmic:theme', crt ? 'crt' : 'printout');
-    } catch (e) { /* ignore */ }
-    sync();
-  };
-
-  const toggleFx = () => {
-    const off = root.classList.toggle('fx-off');
-    try {
-      localStorage.setItem('cosmic:fx', off ? 'off' : 'on');
-    } catch (e) { /* ignore */ }
-    sync();
-  };
-
-  $$('[data-theme-toggle]').forEach((b) => b.addEventListener('click', toggleTheme));
-  $$('[data-fx-toggle]').forEach((b) => b.addEventListener('click', toggleFx));
-  sync();
-
-  return { toggleTheme, toggleFx };
+  timers.push(setTimeout(finish, 5000));
 }
 
 /* ── MOBILE NAV ──────────────────────────────────────────────────────── */
@@ -210,7 +153,7 @@ function typedText() {
   });
 }
 
-/* ── CURSOR-TRACKED PHOSPHOR POOLING ─────────────────────────────────── */
+/* ── CURSOR-TRACKED WASH ─────────────────────────────────── */
 
 function cursorPool() {
   if (reduceMotion || !window.matchMedia('(hover: hover)').matches) return;
@@ -429,15 +372,15 @@ function commandPalette() {
       li.setAttribute('aria-selected', String(i === 0));
 
       const kind = document.createElement('span');
-      kind.className = 'w-10 shrink-0 font-pixel text-[9px] uppercase tracking-widest text-p-faint';
+      kind.className = 'w-10 shrink-0 font-mono text-[9px] uppercase tracking-widest text-ink-faint';
       kind.textContent = r.kind;
 
       const title = document.createElement('span');
-      title.className = 'cmdk-title min-w-0 flex-1 truncate text-p-hi';
+      title.className = 'cmdk-title min-w-0 flex-1 truncate text-ink-hi';
       title.textContent = r.label;
 
       const hint = document.createElement('span');
-      hint.className = 'hidden max-w-[45%] shrink-0 truncate text-[11px] text-p-faint sm:block';
+      hint.className = 'hidden max-w-[45%] shrink-0 truncate text-[11px] text-ink-faint sm:block';
       hint.textContent = r.hint || r.url;
 
       li.append(kind, title, hint);
@@ -564,7 +507,7 @@ function lightbox() {
 
 /* ── GLOBAL KEYMAP ───────────────────────────────────────────────────── */
 
-function keymap({ cmdk, help, box, display }) {
+function keymap({ cmdk, help, box }) {
   const gotoMap = {};
   readNavIndex().pages.forEach((p) => {
     if (p.key) gotoMap[p.key] = p.url;
@@ -607,12 +550,6 @@ function keymap({ cmdk, help, box, display }) {
         e.preventDefault();
         if (help) help.toggle();
         break;
-      case 't':
-        display.toggleTheme();
-        break;
-      case 'f':
-        display.toggleFx();
-        break;
       case 'j':
         window.scrollBy({ top: 120, behavior: reduceMotion ? 'auto' : 'smooth' });
         break;
@@ -628,7 +565,6 @@ function keymap({ cmdk, help, box, display }) {
 /* ── BOOT ────────────────────────────────────────────────────────────── */
 
 function init() {
-  const display = displayControls();
   mobileNav();
   statusLine();
   typedText();
@@ -646,8 +582,8 @@ function init() {
     $$('[data-help-close]').forEach((b) => b.addEventListener('click', () => help.close()));
   }
 
-  keymap({ cmdk, help, box, display });
-  bootSequence();
+  keymap({ cmdk, help, box });
+  titleCard();
 }
 
 if (document.readyState === 'loading') {
