@@ -1,26 +1,26 @@
 ---
-permalink: /wire/feed.xml
+permalink: /notes/feed.xml
 eleventyExcludeFromCollections: true
 ---
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>{{ site.title }} — wire</title>
-  <subtitle>Short dispatches.</subtitle>
-  <link href="{{ site.url }}/wire/feed.xml" rel="self"/>
-  <link href="{{ site.url }}/wire/"/>
+  <title>{{ site.title }} — notes</title>
+  <subtitle>Short notes.</subtitle>
+  <link href="{{ site.url }}/notes/feed.xml" rel="self"/>
+  <link href="{{ site.url }}/notes/"/>
   <updated>{% if collections.notes.length %}{{ collections.notes | getNewestCollectionItemDate | dateToRfc3339 }}{% else %}{{ page.date | dateToRfc3339 }}{% endif %}</updated>
-  <id>{{ site.url }}/wire/</id>
+  <id>{{ site.url }}/notes/</id>
   <author>
     <name>{{ site.author }}</name>
   </author>
   {%- for note in collections.notes | limit(50) %}
-  {% set noteUrl %}{{ site.url }}/wire/#n-{{ note.date | noteId }}{% endset %}
+  {% set noteUrl %}{{ site.url }}/notes/#n-{{ note.date | noteId }}{% endset %}
   <entry>
     <title type="text">{{ note.templateContent | excerpt }}</title>
     <link href="{{ noteUrl }}"/>
     <updated>{{ note.date | dateToRfc3339 }}</updated>
-    <id>{{ site.url }}/wire/n-{{ note.date | noteId }}</id>
-    <content type="html">{{ note.templateContent | htmlToAbsoluteUrls(site.url + "/wire/") }}</content>
+    <id>{{ site.url }}/notes/n-{{ note.date | noteId }}</id>
+    <content type="html">{{ note.templateContent | htmlToAbsoluteUrls(site.url + "/notes/") }}</content>
   </entry>
   {%- endfor %}
 </feed>

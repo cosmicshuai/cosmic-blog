@@ -36,7 +36,7 @@ function bootSequence() {
     ['PHOSPHOR', 'AMBER P3'],
     ['LINK', location.host || 'localhost'],
     ['MOUNT /posts', (index.posts.length || 0) + ' RECORDS'],
-    ['MOUNT /wire', (index.notes.length || 0) + ' PACKETS'],
+    ['MOUNT /notes', (index.notes.length || 0) + ' NOTES'],
     ['READY.', ''],
   ];
 
@@ -393,7 +393,7 @@ function commandPalette() {
     ...index.pages.map((p) => ({ ...p, kind: 'page' })),
     ...index.posts.map((p) => ({ ...p, kind: 'post' })),
     ...index.tags.map((p) => ({ ...p, kind: 'tag' })),
-    ...index.notes.map((p) => ({ ...p, kind: 'wire' })),
+    ...index.notes.map((p) => ({ ...p, kind: 'note' })),
     ...index.extras.map((p) => ({ ...p, kind: 'link' })),
   ];
 
