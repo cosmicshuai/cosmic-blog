@@ -16,27 +16,27 @@ eleventyComputed:
 {% set postslist = collections.posts | getByTag(tag) %}
 
 <header class="mb-12 pt-4">
-  <p class="mb-3 font-mono text-sm text-p-dim">
-    <span class="text-p glow-sm">$</span> grep -l '#{{ tag }}' ~/posts/*.md
+  <p class="mb-3 font-mono text-sm text-ink-dim">
+    <span class="text-signal">$</span> grep -l '#{{ tag }}' ~/posts/*.md
   </p>
-  <h1 class="aberrate font-display text-[clamp(2.5rem,9vw,5.5rem)] uppercase leading-[0.9] text-p">
-    <span class="text-p/35" aria-hidden="true">#</span>{{ tag }}
+  <h1 class="title-card text-[clamp(2.5rem,9vw,5.5rem)] leading-[0.92]">
+    <span class="text-signal/35" aria-hidden="true">#</span>{{ tag }}
   </h1>
-  <p class="mt-4 font-mono text-sm text-p-dim">
-    <span class="text-p-hi">{{ postslist.length }}</span>
+  <p class="mt-4 font-mono text-sm text-ink-dim">
+    <span class="text-ink-hi">{{ postslist.length }}</span>
     {{ "record" if postslist.length == 1 else "records" }} matched.
   </p>
 </header>
 
 <div class="panel" data-reveal>
   <div class="panel-hd">
-    <span><span class="text-p/50" aria-hidden="true">▚▚</span> ~/posts &mdash; filtered</span>
-    <span class="text-p/50">#{{ tag }}</span>
+    <span><span class="text-signal/50" aria-hidden="true">▚▚</span> ~/posts &mdash; filtered</span>
+    <span class="text-signal/50">#{{ tag }}</span>
   </div>
 
   {% if postslist.length === 0 %}
     <div class="panel-body">
-      <p class="font-mono text-sm text-p-dim">No records carry this tag.</p>
+      <p class="font-mono text-sm text-ink-dim">No records carry this tag.</p>
     </div>
   {% else %}
     <ul class="divide-y divide-line/60">

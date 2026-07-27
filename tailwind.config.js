@@ -1,11 +1,11 @@
 import typography from '@tailwindcss/typography';
 
-/** Channel-triplet CSS vars so Tailwind opacity modifiers (`text-p/40`) work. */
+/** Channel-triplet CSS vars so Tailwind opacity modifiers (`text-signal/40`) work. */
 const v = (name) => `rgb(var(${name}) / <alpha-value>)`;
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'class',
+  // Dark only. There is no light counterpart and no `dark:` variant in use.
   content: [
     './src/**/*.{html,njk,md,js}',
     './eleventy.config.js', // the code-block transform injects .copy-btn
@@ -20,53 +20,48 @@ export default {
         'surface-2': v('--c-surface-2'),
         line: v('--c-line'),
         'line-2': v('--c-line-2'),
-        // Phosphor ramp — the whole UI is one hue at varying intensity.
-        p: v('--c-p'),
-        'p-hi': v('--c-p-hi'),
-        'p-body': v('--c-p-body'),
-        'p-dim': v('--c-p-dim'),
-        'p-faint': v('--c-p-faint'),
-        // The only two escapes from monochrome.
+
+        // Crawl yellow. Headings, wordmark, active state — never body copy.
+        signal: v('--c-signal'),
+        // "A long time ago…" blue. Links and secondary accents.
+        blue: v('--c-blue'),
+
+        // Reading ramp. Neutral by design: body text is never coloured.
+        'ink-hi': v('--c-ink-hi'),
+        ink: v('--c-ink'),
+        'ink-dim': v('--c-ink-dim'),
+        'ink-faint': v('--c-ink-faint'),
+
         ok: v('--c-ok'),
         warn: v('--c-warn'),
       },
       fontFamily: {
-        display: ['VT323', 'ui-monospace', 'monospace'],
-        pixel: ['Silkscreen', 'ui-monospace', 'monospace'],
+        // News Cycle is the News Gothic analogue the crawl is set in.
+        display: ['"News Cycle"', 'Archivo', 'system-ui', 'sans-serif'],
+        // Archivo carries body copy — proportional, high legibility at 17px.
+        sans: ['Archivo', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
-        sans: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       letterSpacing: {
         widest2: '0.28em',
+        crawl: '0.06em',
       },
       maxWidth: {
         screenframe: '78rem',
-        measure: '70ch',
+        measure: '68ch',
       },
       boxShadow: {
-        bloom: '0 0 24px -6px rgb(var(--c-p) / 0.55)',
-        'bloom-lg': '0 0 60px -12px rgb(var(--c-p) / 0.5)',
-        inset1: 'inset 0 1px 0 0 rgb(var(--c-p) / 0.10)',
+        signal: '0 0 24px -6px rgb(var(--c-signal) / 0.45)',
+        'signal-lg': '0 0 70px -14px rgb(var(--c-signal) / 0.4)',
+        panel: '0 18px 50px -24px rgb(0 0 0 / 0.9)',
       },
       animation: {
-        flicker: 'flicker 6s steps(1, end) infinite',
-        roll: 'roll 9s linear infinite',
         blink: 'blink 1.05s step-end infinite',
         sweep: 'sweep 2.4s ease-in-out infinite',
         'bar-pulse': 'barPulse 1.6s ease-in-out infinite',
-        'power-on': 'powerOn 620ms cubic-bezier(0.16, 1, 0.3, 1) both',
+        'fade-up': 'fadeUp 700ms cubic-bezier(0.16, 1, 0.3, 1) both',
       },
       keyframes: {
-        flicker: {
-          '0%, 96%, 100%': { opacity: '0' },
-          '97%': { opacity: '0.35' },
-          '98%': { opacity: '0.08' },
-          '99%': { opacity: '0.22' },
-        },
-        roll: {
-          '0%': { transform: 'translateY(-30vh)' },
-          '100%': { transform: 'translateY(130vh)' },
-        },
         blink: {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0' },
@@ -79,28 +74,27 @@ export default {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.35' },
         },
-        powerOn: {
-          '0%': { transform: 'scaleY(0.004) scaleX(1.1)', filter: 'brightness(4)', opacity: '0' },
-          '35%': { transform: 'scaleY(0.02) scaleX(1)', filter: 'brightness(3)', opacity: '1' },
-          '100%': { transform: 'scaleY(1) scaleX(1)', filter: 'brightness(1)', opacity: '1' },
+        fadeUp: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'none' },
         },
       },
       typography: () => ({
-        crt: {
+        crawl: {
           css: {
-            '--tw-prose-body': 'rgb(var(--c-p-body))',
-            '--tw-prose-headings': 'rgb(var(--c-p-hi))',
-            '--tw-prose-lead': 'rgb(var(--c-p-dim))',
-            '--tw-prose-links': 'rgb(var(--c-p))',
-            '--tw-prose-bold': 'rgb(var(--c-p-hi))',
-            '--tw-prose-counters': 'rgb(var(--c-p-dim))',
-            '--tw-prose-bullets': 'rgb(var(--c-p) / 0.55)',
+            '--tw-prose-body': 'rgb(var(--c-ink))',
+            '--tw-prose-headings': 'rgb(var(--c-signal))',
+            '--tw-prose-lead': 'rgb(var(--c-ink-dim))',
+            '--tw-prose-links': 'rgb(var(--c-blue))',
+            '--tw-prose-bold': 'rgb(var(--c-ink-hi))',
+            '--tw-prose-counters': 'rgb(var(--c-ink-dim))',
+            '--tw-prose-bullets': 'rgb(var(--c-signal) / 0.7)',
             '--tw-prose-hr': 'rgb(var(--c-line))',
-            '--tw-prose-quotes': 'rgb(var(--c-p-hi))',
-            '--tw-prose-quote-borders': 'rgb(var(--c-p) / 0.6)',
-            '--tw-prose-captions': 'rgb(var(--c-p-dim))',
-            '--tw-prose-code': 'rgb(var(--c-p))',
-            '--tw-prose-pre-code': 'rgb(var(--c-p-body))',
+            '--tw-prose-quotes': 'rgb(var(--c-ink-hi))',
+            '--tw-prose-quote-borders': 'rgb(var(--c-signal) / 0.7)',
+            '--tw-prose-captions': 'rgb(var(--c-ink-dim))',
+            '--tw-prose-code': 'rgb(var(--c-ink-hi))',
+            '--tw-prose-pre-code': 'rgb(var(--c-ink))',
             '--tw-prose-pre-bg': 'rgb(var(--c-bg-deep))',
             '--tw-prose-th-borders': 'rgb(var(--c-line-2))',
             '--tw-prose-td-borders': 'rgb(var(--c-line))',

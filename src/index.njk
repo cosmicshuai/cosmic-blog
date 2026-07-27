@@ -7,34 +7,20 @@ section: home
 <!-- ══ HERO ══════════════════════════════════════════════════════════ -->
 <section class="relative pb-20 pt-4 sm:pt-10">
 
-  <!-- Machine identity strip -->
-  <div class="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[11px] uppercase tracking-widest text-p-faint">
-    <span class="flex items-center gap-1.5 text-p-dim">
-      <span class="inline-block h-1.5 w-1.5 rounded-full bg-ok animate-bar-pulse" aria-hidden="true"></span>
-      carrier detected
-    </span>
-    <span aria-hidden="true" class="text-line-2">│</span>
-    <span>terminal 80×24</span>
-    <span aria-hidden="true" class="text-line-2">│</span>
-    <span>amber P3</span>
-    <span aria-hidden="true" class="text-line-2">│</span>
-    <span>{{ site.url | replace("https://", "") }}</span>
-  </div>
+  <!-- The line that opens every film, in its own blue. -->
+  <p class="mb-10 max-w-xl font-sans text-base leading-relaxed text-blue sm:text-lg">
+    A long time ago in a galaxy far, far away....
+  </p>
 
-  <!-- Wordmark -->
-  <h1 class="mb-6 flex flex-col gap-1">
-    <span class="font-mono text-sm text-p-dim" aria-hidden="true">
-      <span class="text-p glow-sm">$</span> cat /etc/motd
-    </span>
-    <span class="aberrate font-display text-[clamp(2.75rem,11vw,7.5rem)] uppercase leading-[0.86] tracking-tight text-p">
-      {{ site.title }}
-    </span>
+  <!-- Title card -->
+  <h1 class="title-card mb-8 text-[clamp(2.5rem,10vw,6.5rem)] leading-[0.92]">
+    {{ site.title }}
   </h1>
 
-  <!-- Typed tagline -->
-  <p class="mb-12 max-w-measure font-mono text-base text-p-body sm:text-lg" data-type="{{ site.description }}">
+  <!-- Tagline -->
+  <p class="mb-12 max-w-measure font-sans text-lg leading-relaxed text-ink-dim" data-type="{{ site.description }}">
     <span class="sr-only">{{ site.description }}</span>
-    <span aria-hidden="true"><span class="text-p/60">▸ </span><span data-type-out></span><span class="text-p cursor-block"></span></span>
+    <span aria-hidden="true"><span data-type-out></span><span class="text-signal cursor-block"></span></span>
   </p>
 
   <!-- Readout -->
@@ -47,8 +33,8 @@ section: home
     ] %}
     {% for s in stats %}
       <div class="bg-bg px-4 py-3">
-        <dt class="font-pixel text-[10px] uppercase tracking-widest text-p-faint">{{ s.k }}</dt>
-        <dd class="mt-1 font-display text-3xl leading-none text-p glow-sm">{{ s.v }}</dd>
+        <dt class="font-mono text-[10px] uppercase tracking-widest text-ink-faint">{{ s.k }}</dt>
+        <dd class="mt-1 crawl-type text-2xl leading-none text-signal">{{ s.v }}</dd>
       </div>
     {% endfor %}
   </dl>
@@ -76,35 +62,35 @@ section: home
 
     <div class="panel bracketed group overflow-hidden">
       <div class="panel-hd">
-        <span><span class="text-p/50" aria-hidden="true">▚▚</span> test pattern</span>
-        <span class="text-p/50">SMPTE — amber</span>
+        <span><span class="text-signal/50" aria-hidden="true">▚▚</span> test pattern</span>
+        <span class="text-signal/50">NO CONTACT</span>
       </div>
 
-      <!-- Monochrome bar pattern: the tube proving it still works. -->
+      <!-- Signal-strength ladder, brightest to dark. -->
       <div class="flex h-28 sm:h-40" aria-hidden="true">
-        <div class="flex-1 bg-p"></div>
-        <div class="flex-1 bg-p/80"></div>
-        <div class="flex-1 bg-p/60"></div>
-        <div class="flex-1 bg-p/45"></div>
-        <div class="flex-1 bg-p/30"></div>
-        <div class="flex-1 bg-p/20"></div>
-        <div class="flex-1 bg-p/10"></div>
-        <div class="flex-1 bg-p/5"></div>
+        <div class="flex-1 bg-signal"></div>
+        <div class="flex-1 bg-signal/80"></div>
+        <div class="flex-1 bg-signal/60"></div>
+        <div class="flex-1 bg-signal/45"></div>
+        <div class="flex-1 bg-signal/30"></div>
+        <div class="flex-1 bg-signal/20"></div>
+        <div class="flex-1 bg-signal/10"></div>
+        <div class="flex-1 bg-signal/5"></div>
       </div>
 
       <div class="panel-body pool">
-        <p class="font-display text-4xl leading-none text-p glow sm:text-5xl">NO SIGNAL</p>
-        <p class="mt-4 max-w-measure font-mono text-sm leading-relaxed text-p-dim">
-          The archive is empty — nothing has been committed to disk yet. The tube is warm and
-          the carrier is up; the first transmission just hasn't been written.
+        <p class="crawl-type text-3xl leading-none text-signal sm:text-4xl">NO SIGNAL</p>
+        <p class="mt-4 max-w-measure font-mono text-sm leading-relaxed text-ink-dim">
+          The archive is empty — nothing has been committed to disk yet. The scanners are
+          clear and the channel is open; the first transmission just hasn't been sent.
         </p>
-        <p class="mt-6 font-mono text-sm text-p-faint">
-          <span class="text-p/60">$</span> ls -la src/posts/*.md<br>
+        <p class="mt-6 font-mono text-sm text-ink-faint">
+          <span class="text-signal/60">$</span> ls -la src/posts/*.md<br>
           <span class="text-warn">ls: no matches found</span>
         </p>
-        <p class="mt-6 font-mono text-xs text-p-faint">
-          Drop a <code class="border border-line-2 px-1 py-0.5 text-p-dim">YYYY-MM-DD-slug.md</code>
-          into <code class="border border-line-2 px-1 py-0.5 text-p-dim">src/posts/</code> and this panel
+        <p class="mt-6 font-mono text-xs text-ink-faint">
+          Drop a <code class="border border-line-2 px-1 py-0.5 text-ink-dim">YYYY-MM-DD-slug.md</code>
+          into <code class="border border-line-2 px-1 py-0.5 text-ink-dim">src/posts/</code> and this panel
           becomes the listing.
         </p>
       </div>
@@ -116,8 +102,8 @@ section: home
 
     <div class="panel">
       <div class="panel-hd">
-        <span><span class="text-p/50" aria-hidden="true">▚▚</span> ~/posts</span>
-        <span class="text-p/50">sorted: mtime desc</span>
+        <span><span class="text-signal/50" aria-hidden="true">▚▚</span> ~/posts</span>
+        <span class="text-signal/50">sorted: mtime desc</span>
       </div>
       <ul class="divide-y divide-line/60">
         {% for post in postslist %}
@@ -136,8 +122,8 @@ section: home
 
   <div class="panel">
     <div class="panel-hd">
-      <span><span class="text-p/50" aria-hidden="true">▚▚</span> /var/log/notes</span>
-      <span class="flex items-center gap-2 text-p/50">
+      <span><span class="text-signal/50" aria-hidden="true">▚▚</span> /var/log/notes</span>
+      <span class="flex items-center gap-2 text-signal/50">
         <span class="inline-block h-1.5 w-1.5 rounded-full bg-ok animate-bar-pulse" aria-hidden="true"></span>
         listening
       </span>
@@ -145,20 +131,20 @@ section: home
 
     <ol class="divide-y divide-line/60">
       {% for note in collections.notes | limit(3) %}
-        <li class="group border-l-2 border-transparent px-4 py-4 transition-colors duration-150 hover:border-p/60 hover:bg-p/[0.05]">
-          <div class="mb-2 flex items-center gap-3 font-pixel text-[10px] uppercase tracking-widest text-p-faint">
+        <li class="group border-l-2 border-transparent px-4 py-4 transition-colors duration-150 hover:border-signal/60 hover:bg-signal/[0.05]">
+          <div class="mb-2 flex items-center gap-3 font-mono text-[10px] uppercase tracking-widest text-ink-faint">
             <time datetime="{{ note.date | dateToRfc3339 }}">{{ note.date | htmlDateString }} {{ note.date | utcTime }}</time>
             <span aria-hidden="true" class="text-line-2">·</span>
             <span>{{ note.templateContent | charCount }} B</span>
           </div>
-          <div class="note-body max-w-measure font-mono text-[15px] leading-[1.7] text-p-body">
+          <div class="note-body max-w-measure font-mono text-[15px] leading-[1.7] text-ink">
             {{ note.templateContent | safe }}
           </div>
         </li>
       {% endfor %}
     </ol>
 
-    <a href="/notes/" class="group flex items-center gap-2 border-t border-line px-4 py-2.5 font-mono text-[11px] text-p-dim transition-colors hover:bg-p/[0.06] hover:text-p">
+    <a href="/notes/" class="group flex items-center gap-2 border-t border-line px-4 py-2.5 font-mono text-[11px] text-ink-dim transition-colors hover:bg-signal/[0.06] hover:text-signal">
       tail the full log
       <span aria-hidden="true" class="transition-transform duration-200 group-hover:translate-x-1">→</span>
     </a>
@@ -176,26 +162,26 @@ section: home
     <a href="/projects/" class="group panel bracketed pool relative md:col-span-4">
       <div class="wipe"></div>
       <div class="panel-hd">
-        <span><span class="text-p/50" aria-hidden="true">▚▚</span> proc</span>
-        <span class="text-p/50">{{ projects.length | default(0) }} running</span>
+        <span><span class="text-signal/50" aria-hidden="true">▚▚</span> proc</span>
+        <span class="text-signal/50">{{ projects.length | default(0) }} running</span>
       </div>
       <div class="panel-body">
-        <h3 class="font-display text-3xl leading-none text-p glow-sm">Projects</h3>
-        <p class="mt-2 font-mono text-sm text-p-dim">What is currently drawing power.</p>
+        <h3 class="crawl-type text-2xl leading-none text-signal">Projects</h3>
+        <p class="mt-2 font-mono text-sm text-ink-dim">What is currently drawing power.</p>
 
         <ul class="mt-6 space-y-1.5 font-mono text-xs">
           {% for project in projects %}
             {% if loop.index0 < 3 %}
               <li class="flex items-center gap-3 border border-line bg-bg-deep/40 px-3 py-2">
-                <span class="inline-block h-1.5 w-1.5 shrink-0 rounded-full {% if project.status == 'active' %}bg-ok{% else %}bg-p{% endif %}" aria-hidden="true"></span>
-                <span class="text-p-hi">{{ project.name }}</span>
-                <span class="ml-auto uppercase tracking-widest text-p-faint">{{ project.status }}</span>
+                <span class="inline-block h-1.5 w-1.5 shrink-0 rounded-full {% if project.status == 'active' %}bg-ok{% else %}bg-signal{% endif %}" aria-hidden="true"></span>
+                <span class="text-ink-hi">{{ project.name }}</span>
+                <span class="ml-auto uppercase tracking-widest text-ink-faint">{{ project.status }}</span>
               </li>
             {% endif %}
           {% endfor %}
         </ul>
 
-        <span class="mt-6 inline-flex items-center gap-2 font-mono text-xs text-p transition-transform duration-200 group-hover:translate-x-1">
+        <span class="mt-6 inline-flex items-center gap-2 font-mono text-xs text-signal transition-transform duration-200 group-hover:translate-x-1">
           top <span aria-hidden="true">→</span>
         </span>
       </div>
@@ -205,12 +191,12 @@ section: home
     <a href="/photography/" class="group panel bracketed pool relative flex flex-col md:col-span-2">
       <div class="wipe"></div>
       <div class="panel-hd">
-        <span><span class="text-p/50" aria-hidden="true">▚▚</span> fb0</span>
-        <span class="text-p/50">{{ photos.length | default(0) }}</span>
+        <span><span class="text-signal/50" aria-hidden="true">▚▚</span> fb0</span>
+        <span class="text-signal/50">{{ photos.length | default(0) }}</span>
       </div>
       <div class="panel-body flex flex-1 flex-col">
-        <h3 class="font-display text-3xl leading-none text-p glow-sm">Frame buffer</h3>
-        <p class="mt-2 font-mono text-sm text-p-dim">Light, captured and quantised.</p>
+        <h3 class="crawl-type text-2xl leading-none text-signal">Frame buffer</h3>
+        <p class="mt-2 font-mono text-sm text-ink-dim">Light, captured and quantised.</p>
 
         <div class="mt-6 flex gap-1.5 overflow-hidden">
           {% for photo in photos %}
@@ -222,7 +208,7 @@ section: home
           {% endfor %}
         </div>
 
-        <span class="mt-auto pt-6 inline-flex items-center gap-2 font-mono text-xs text-p transition-transform duration-200 group-hover:translate-x-1">
+        <span class="mt-auto pt-6 inline-flex items-center gap-2 font-mono text-xs text-signal transition-transform duration-200 group-hover:translate-x-1">
           open <span aria-hidden="true">→</span>
         </span>
       </div>
@@ -232,15 +218,15 @@ section: home
     <a href="/notes/" class="group panel bracketed pool relative md:col-span-2">
       <div class="wipe"></div>
       <div class="panel-hd">
-        <span><span class="text-p/50" aria-hidden="true">▚▚</span> notes</span>
-        <span class="text-p/50">{{ collections.notes.length | default(0) }}</span>
+        <span><span class="text-signal/50" aria-hidden="true">▚▚</span> notes</span>
+        <span class="text-signal/50">{{ collections.notes.length | default(0) }}</span>
       </div>
       <div class="panel-body">
-        <h3 class="font-display text-3xl leading-none text-p glow-sm">Notes</h3>
-        <p class="mt-2 max-w-measure font-mono text-sm leading-relaxed text-p-dim">
+        <h3 class="crawl-type text-2xl leading-none text-signal">Notes</h3>
+        <p class="mt-2 max-w-measure font-mono text-sm leading-relaxed text-ink-dim">
           Short notes. Half-thoughts, links, things not worth a whole record.
         </p>
-        <span class="mt-6 inline-flex items-center gap-2 font-mono text-xs text-p transition-transform duration-200 group-hover:translate-x-1">
+        <span class="mt-6 inline-flex items-center gap-2 font-mono text-xs text-signal transition-transform duration-200 group-hover:translate-x-1">
           tail -f <span aria-hidden="true">→</span>
         </span>
       </div>
@@ -250,16 +236,16 @@ section: home
     <a href="/about/" class="group panel bracketed pool relative md:col-span-2">
       <div class="wipe"></div>
       <div class="panel-hd">
-        <span><span class="text-p/50" aria-hidden="true">▚▚</span> id</span>
-        <span class="text-p/50">uid 1000</span>
+        <span><span class="text-signal/50" aria-hidden="true">▚▚</span> id</span>
+        <span class="text-signal/50">uid 1000</span>
       </div>
       <div class="panel-body">
-        <h3 class="font-display text-3xl leading-none text-p glow-sm">whoami</h3>
-        <p class="mt-2 max-w-measure font-mono text-sm leading-relaxed text-p-dim">
+        <h3 class="crawl-type text-2xl leading-none text-signal">whoami</h3>
+        <p class="mt-2 max-w-measure font-mono text-sm leading-relaxed text-ink-dim">
           {{ site.author }} — {{ site.role }}. The operator record, hardware inventory and
           contact channels.
         </p>
-        <span class="mt-6 inline-flex items-center gap-2 font-mono text-xs text-p transition-transform duration-200 group-hover:translate-x-1">
+        <span class="mt-6 inline-flex items-center gap-2 font-mono text-xs text-signal transition-transform duration-200 group-hover:translate-x-1">
           cat /etc/passwd <span aria-hidden="true">→</span>
         </span>
       </div>
@@ -269,16 +255,16 @@ section: home
     <a href="/feed.xml" class="group panel bracketed pool relative md:col-span-2">
       <div class="wipe"></div>
       <div class="panel-hd">
-        <span><span class="text-p/50" aria-hidden="true">▚▚</span> uplink</span>
-        <span class="text-p/50">rss 2.0</span>
+        <span><span class="text-signal/50" aria-hidden="true">▚▚</span> uplink</span>
+        <span class="text-signal/50">rss 2.0</span>
       </div>
       <div class="panel-body">
-        <h3 class="font-display text-3xl leading-none text-p glow-sm">Subscribe</h3>
-        <p class="mt-2 max-w-measure font-mono text-sm leading-relaxed text-p-dim">
+        <h3 class="crawl-type text-2xl leading-none text-signal">Subscribe</h3>
+        <p class="mt-2 max-w-measure font-mono text-sm leading-relaxed text-ink-dim">
           No newsletter, no tracking pixel. Point a reader at the raw feed and new records
           arrive on their own.
         </p>
-        <code class="mt-6 block border border-line bg-bg-deep/50 px-3 py-2 font-mono text-xs text-p-hi">
+        <code class="mt-6 block border border-line bg-bg-deep/50 px-3 py-2 font-mono text-xs text-ink-hi">
           {{ site.url }}/feed.xml
         </code>
       </div>

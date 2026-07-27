@@ -1,22 +1,22 @@
 <footer class="relative mt-24 border-t border-line">
-  <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-p/35 to-transparent"></div>
+  <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-signal/35 to-transparent"></div>
 
   <div class="mx-auto max-w-screenframe px-4 py-14 sm:px-6">
 
     <!-- Sign-off prompt -->
-    <p class="mb-10 font-mono text-sm text-p-dim">
-      <span class="text-p glow-sm">$</span> shutdown -h now<span class="cursor-block text-p" aria-hidden="true"></span>
+    <p class="mb-10 font-mono text-sm text-ink-dim">
+      <span class="text-signal">$</span> shutdown -h now<span class="cursor-block text-signal" aria-hidden="true"></span>
     </p>
 
     <div class="grid gap-10 sm:grid-cols-3">
 
       <div>
-        <h2 class="mb-4 font-pixel text-[11px] uppercase tracking-widest2 text-p">/ index</h2>
+        <h2 class="crawl-type mb-4 text-xs text-signal">/ index</h2>
         <ul class="space-y-1.5 font-mono text-sm">
           {% for item in nav %}
             <li>
-              <a href="{{ item.url }}" class="group inline-flex items-center gap-2 text-p-dim transition-colors hover:text-p">
-                <span aria-hidden="true" class="text-p/0 transition-colors group-hover:text-p">▸</span>
+              <a href="{{ item.url }}" class="group inline-flex items-center gap-2 text-ink-dim transition-colors hover:text-signal">
+                <span aria-hidden="true" class="text-signal/0 transition-colors group-hover:text-signal">▸</span>
                 <span class="-ml-4 transition-transform duration-200 group-hover:translate-x-4">{{ item.label | lower }}</span>
               </a>
             </li>
@@ -25,23 +25,23 @@
       </div>
 
       <div>
-        <h2 class="mb-4 font-pixel text-[11px] uppercase tracking-widest2 text-p">/ uplink</h2>
+        <h2 class="crawl-type mb-4 text-xs text-signal">/ uplink</h2>
         <ul class="space-y-1.5 font-mono text-sm">
           <li>
-            <a href="{{ site.github }}" rel="me noopener" class="group inline-flex items-center gap-2 text-p-dim transition-colors hover:text-p">
-              <span aria-hidden="true" class="text-p/0 transition-colors group-hover:text-p">▸</span>
+            <a href="{{ site.github }}" rel="me noopener" class="group inline-flex items-center gap-2 text-ink-dim transition-colors hover:text-signal">
+              <span aria-hidden="true" class="text-signal/0 transition-colors group-hover:text-signal">▸</span>
               <span class="-ml-4 transition-transform duration-200 group-hover:translate-x-4">github</span>
             </a>
           </li>
           <li>
-            <a href="mailto:{{ site.email }}" class="group inline-flex items-center gap-2 text-p-dim transition-colors hover:text-p">
-              <span aria-hidden="true" class="text-p/0 transition-colors group-hover:text-p">▸</span>
+            <a href="mailto:{{ site.email }}" class="group inline-flex items-center gap-2 text-ink-dim transition-colors hover:text-signal">
+              <span aria-hidden="true" class="text-signal/0 transition-colors group-hover:text-signal">▸</span>
               <span class="-ml-4 transition-transform duration-200 group-hover:translate-x-4">mail</span>
             </a>
           </li>
           <li>
-            <a href="/feed.xml" class="group inline-flex items-center gap-2 text-p-dim transition-colors hover:text-p">
-              <span aria-hidden="true" class="text-p/0 transition-colors group-hover:text-p">▸</span>
+            <a href="/feed.xml" class="group inline-flex items-center gap-2 text-ink-dim transition-colors hover:text-signal">
+              <span aria-hidden="true" class="text-signal/0 transition-colors group-hover:text-signal">▸</span>
               <span class="-ml-4 transition-transform duration-200 group-hover:translate-x-4">rss</span>
             </a>
           </li>
@@ -49,26 +49,25 @@
       </div>
 
       <div>
-        <h2 class="mb-4 font-pixel text-[11px] uppercase tracking-widest2 text-p">/ dmesg</h2>
-        <dl class="space-y-1.5 font-mono text-sm text-p-dim">
-          <div class="flex justify-between gap-4"><dt>display</dt><dd data-fx-readout class="text-p-hi">amber P3</dd></div>
-          <div class="flex justify-between gap-4"><dt>records</dt><dd class="text-p-hi">{{ collections.posts.length | default(0) }}</dd></div>
-          <div class="flex justify-between gap-4"><dt>notes</dt><dd class="text-p-hi">{{ collections.notes.length | default(0) }}</dd></div>
-          <div class="flex justify-between gap-4"><dt>topics</dt><dd class="text-p-hi">{{ collections.validTagList.length | default(0) }}</dd></div>
-          <div class="flex justify-between gap-4"><dt>frames</dt><dd class="text-p-hi">{{ photos.length | default(0) }}</dd></div>
-          <div class="flex justify-between gap-4"><dt>kernel</dt><dd class="text-p-hi">eleventy 3.x</dd></div>
+        <h2 class="crawl-type mb-4 text-xs text-signal">/ dmesg</h2>
+        <dl class="space-y-1.5 font-mono text-sm text-ink-dim">
+          <div class="flex justify-between gap-4"><dt>records</dt><dd class="text-ink-hi">{{ collections.posts.length | default(0) }}</dd></div>
+          <div class="flex justify-between gap-4"><dt>notes</dt><dd class="text-ink-hi">{{ collections.notes.length | default(0) }}</dd></div>
+          <div class="flex justify-between gap-4"><dt>topics</dt><dd class="text-ink-hi">{{ collections.validTagList.length | default(0) }}</dd></div>
+          <div class="flex justify-between gap-4"><dt>frames</dt><dd class="text-ink-hi">{{ photos.length | default(0) }}</dd></div>
+          <div class="flex justify-between gap-4"><dt>kernel</dt><dd class="text-ink-hi">eleventy 3.x</dd></div>
           <div class="flex justify-between gap-4"><dt>status</dt><dd class="text-ok">nominal</dd></div>
         </dl>
       </div>
     </div>
 
-    <div class="mt-12 flex flex-col items-start justify-between gap-3 border-t border-line pt-6 font-mono text-[11px] text-p-faint sm:flex-row sm:items-center">
-      <p>© {{ page.date | dateYear }} {{ site.author }} — transmitted from a warm cathode.</p>
+    <div class="mt-12 flex flex-col items-start justify-between gap-3 border-t border-line pt-6 font-mono text-[11px] text-ink-faint sm:flex-row sm:items-center">
+      <p>© {{ page.date | dateYear }} {{ site.author }} — transmitted from the Outer Rim.</p>
       <p class="flex flex-wrap items-center gap-x-2">
         <span>11ty</span><span class="text-line-2">·</span>
         <span>tailwind</span><span class="text-line-2">·</span>
         <span>cloudflare</span><span class="text-line-2">·</span>
-        <span class="border border-line-2 px-1.5 py-0.5 text-p-dim">v2.0.0</span>
+        <span class="border border-line-2 px-1.5 py-0.5 text-ink-dim">v2.0.0</span>
       </p>
     </div>
   </div>

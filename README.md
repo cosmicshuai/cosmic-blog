@@ -4,33 +4,50 @@ A personal blog built with [Eleventy](https://www.11ty.dev/) and [Tailwind CSS](
 
 ## The theme
 
-The site is dressed as an amber-phosphor workstation. It has two display modes,
-both fully designed, toggled from the status bar or with <kbd>t</kbd>:
+Dark only, styled after the opening crawl.
 
-- **CRT** (dark) — P3 amber on warm black, with scanlines, aperture-grille
-  striping, tube vignette, mains flicker and a drifting vertical-hold roll bar.
-- **PRINTOUT** (light) — warm fanfold paper with burnt-amber ink and green-bar
-  ruling. No glow; paper doesn't emit.
+- **Crawl yellow** `#FFE81F` for headings, the wordmark and accents — never body copy.
+- **Body text** is neutral near-white `#E4E4E7` at **15.8:1**, set in Archivo at 17px/1.7.
+- **Links** use the "a long time ago…" blue `#75DDEE`.
+- A **static starfield** sits behind the content, and a title card plays once
+  per session on the first page you land on.
 
-The palette is deliberately monochrome — one hue across a five-step intensity
-ramp — with only `ok` (green) and `warn` (red) escaping it. Even syntax
-highlighting is monochrome, separating tokens by intensity and weight.
+Type is [News Cycle](https://fonts.google.com/specimen/News+Cycle) (the News
+Gothic analogue the crawl is set in) for display,
+[Archivo](https://fonts.google.com/specimen/Archivo) for body copy, and
+[IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) for code.
 
-Type is [VT323](https://fonts.google.com/specimen/VT323) for display,
-[IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono) for body copy,
-and [Silkscreen](https://fonts.google.com/specimen/Silkscreen) for bitmap labels.
+### Readability rules
+
+The previous theme simulated an amber CRT and was genuinely tiring to read. Its
+body text measured 9.9:1 — nominally fine — so the problem was never contrast.
+These rules are why, and they are load-bearing:
+
+1. **Nothing is ever drawn on top of running text.** No scanlines, no grille, no
+   grain. A repeating luminance grating at the spatial frequency of letter
+   strokes is what makes eyes fight to focus. This was the worst offender.
+2. **No chromatic aberration on type.** Simulating what the eye's lens works to
+   correct means that effort never resolves.
+3. **No `text-shadow` on body copy.** Glow softens letterform edges. The wordmark
+   is the sole exception, and only faintly.
+4. **Body copy is proportional**, not monospace, and 17px rather than 15px.
+5. **Colour is for headings, not prose.** Long-form reading in saturated yellow
+   is exactly what was tiring.
+6. **Background is near-black, not `#000`; body text is `#E4E4E7`, not `#FFF`.**
+   Maximum contrast causes halation; ~15:1 is the comfortable ceiling.
+
+Before adding any atmospheric effect, check it against rule 1.
 
 ## Features
 
 - ⚡ Static site generation with Eleventy 3.x
-- 🖥️ Two display modes (CRT / printout) with all screen effects toggleable
+- 🌌 Static starfield and a once-per-session title card
 - ⌨️ Command palette (<kbd>⌘K</kbd>), `g`-prefixed goto keys, `j`/`k` scrolling,
   <kbd>?</kbd> keymap — see the status bar
-- 🔌 Power-on self test on the first page of a session
 - 📝 `/notes/` microblog — a short-form stream with its own feed
 - 🏷️ Tags, archive listing, and per-topic indexes rendered as `ls -la` output
 - 📑 Auto-generated table of contents via `[[toc]]`
-- 🖼️ Responsive WebP/JPEG images; gallery renders amber duotone until focused
+- 🖼️ Responsive WebP/JPEG images; gallery rests desaturated until focused
 - 📅 Date-based URLs like `/2026/01/hello-world/`
 - 📡 RSS feed
 - ♿ Every effect respects `prefers-reduced-motion`; the page reads fine with
@@ -43,8 +60,6 @@ and [Silkscreen](https://fonts.google.com/specimen/Silkscreen) for bitmap labels
 | `⌘K` / `Ctrl+K` / `/` | Command palette |
 | `g` then `h p n t m r a` | Goto home / posts / notes / tags / photos / projects / about |
 | `j` / `k` | Scroll down / up |
-| `t` | Switch CRT ⇄ printout |
-| `f` | Toggle screen effects |
 | `?` | Keymap |
 
 ## Quick Start
@@ -146,7 +161,7 @@ A note is one Markdown file in `src/notes/`:
 date: 2026-07-26T02:41:17Z
 ---
 
-Amber won because of persistence, not brightness.
+Finally read the Dune appendices. Worth it for the ecology alone.
 ```
 
 That's the whole format. Notes:
@@ -205,7 +220,7 @@ blog/
 │   │   ├── macros.njk         # lsRow / panelHead / rule
 │   │   └── footer.njk
 │   ├── _layouts/
-│   │   ├── base.njk           # Chrome + CRT overlay stack
+│   │   ├── base.njk           # Chrome + starfield
 │   │   └── post.njk           # Post layout
 │   ├── assets/js/main.js      # All interactivity, vanilla
 │   ├── posts/                 # YYYY-MM-DD-*.md + posts.json defaults
@@ -295,14 +310,18 @@ the page it points at for the active state to light up.
 ### Colours & styling
 
 The palette lives as channel-triplet CSS variables at the top of
-`src/styles/input.css` — `:root` is printout mode, `.dark` is CRT. Change those
-twelve values and the whole site re-tints; nothing hardcodes a colour.
-`tailwind.config.js` just maps them to utility names (`text-p`, `bg-surface`,
-`border-line-2`, …) so opacity modifiers like `bg-p/60` keep working.
+`src/styles/input.css`. Change those and the whole site re-tints; nothing
+hardcodes a colour. `tailwind.config.js` maps them to utility names so opacity
+modifiers like `bg-signal/60` keep working.
 
-Screen effects are driven by `--scan-alpha`, `--grille-alpha`,
-`--vignette-alpha`, `--aberr` and `--bloom`. The `html.fx-off` block shows how
-to dial them all down at once.
+| Token | Role |
+|-------|------|
+| `signal` | crawl yellow — headings, wordmark, accents. Never body copy. |
+| `blue` | links and secondary accents |
+| `ink` / `ink-hi` / `ink-dim` / `ink-faint` | the neutral reading ramp |
+| `bg` / `bg-deep` / `surface` / `surface-2` | surfaces |
+| `line` / `line-2` | hairlines |
+| `ok` / `warn` | status only |
 
 > **Note:** component classes such as `.btn` and `.kbd` are defined inside
 > `@layer components` so utilities can still override them. Keep new ones there

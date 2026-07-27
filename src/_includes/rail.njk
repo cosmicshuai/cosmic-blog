@@ -1,12 +1,12 @@
 <header class="fixed inset-x-0 top-0 z-50 border-b border-line bg-bg/85 backdrop-blur-md">
-  <div class="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-p/50 to-transparent"></div>
+  <div class="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-signal/50 to-transparent"></div>
 
   <div class="mx-auto flex h-14 max-w-screenframe items-center gap-4 px-4 sm:px-6">
 
     <!-- Machine mark -->
     <a href="/" class="group flex shrink-0 items-center gap-2" aria-label="{{ site.title }} — home">
-      <span aria-hidden="true" class="font-display text-2xl leading-none text-p glow-sm transition-transform duration-300 group-hover:rotate-[8deg]">▚</span>
-      <span class="font-pixel text-[11px] uppercase tracking-widest2 text-p-hi transition-colors group-hover:text-p">COSMIC<span class="text-p/50">-OS</span></span>
+      <span aria-hidden="true" class="text-lg leading-none text-signal transition-transform duration-300 group-hover:translate-x-0.5">◤</span>
+      <span class="crawl-type text-sm text-ink-hi transition-colors group-hover:text-signal">COSMIC</span>
     </a>
 
     <!-- Primary nav -->
@@ -14,11 +14,11 @@
       {% for item in nav %}
         {% set active = (section == item.section) %}
         <a href="{{ item.url }}"
-           class="group relative px-2.5 py-1.5 font-mono text-xs uppercase tracking-wider transition-colors duration-200 {% if active %}text-p{% else %}text-p-dim hover:text-p-hi{% endif %}"
+           class="group relative px-2.5 py-1.5 font-mono text-xs uppercase tracking-wider transition-colors duration-200 {% if active %}text-signal{% else %}text-ink-dim hover:text-ink-hi{% endif %}"
            {% if active %}aria-current="page"{% endif %}>
-          <span aria-hidden="true" class="text-p/40 transition-opacity duration-200 {% if active %}opacity-100{% else %}opacity-0 group-hover:opacity-100{% endif %}">[</span>{{ item.label }}<span aria-hidden="true" class="text-p/40 transition-opacity duration-200 {% if active %}opacity-100{% else %}opacity-0 group-hover:opacity-100{% endif %}">]</span>
+          <span aria-hidden="true" class="text-signal/40 transition-opacity duration-200 {% if active %}opacity-100{% else %}opacity-0 group-hover:opacity-100{% endif %}">[</span>{{ item.label }}<span aria-hidden="true" class="text-signal/40 transition-opacity duration-200 {% if active %}opacity-100{% else %}opacity-0 group-hover:opacity-100{% endif %}">]</span>
           {% if active %}
-            <span aria-hidden="true" class="absolute inset-x-2 -bottom-px h-px bg-p shadow-bloom"></span>
+            <span aria-hidden="true" class="absolute inset-x-2 -bottom-px h-px bg-signal shadow-signal"></span>
           {% endif %}
         </a>
       {% endfor %}
@@ -26,7 +26,7 @@
 
     <!-- Command trigger -->
     <button type="button" data-cmdk-open
-            class="ml-auto flex items-center gap-2 border border-line-2 px-2.5 py-1.5 font-mono text-[11px] text-p-dim transition-colors hover:border-p/60 hover:text-p md:ml-2"
+            class="ml-auto flex items-center gap-2 border border-line-2 px-2.5 py-1.5 font-mono text-[11px] text-ink-dim transition-colors hover:border-signal/60 hover:text-signal md:ml-2"
             aria-label="Open command palette">
       <span aria-hidden="true">▸</span>
       <span class="hidden sm:inline">search</span>
@@ -35,7 +35,7 @@
 
     <!-- Mobile menu -->
     <button type="button" data-nav-toggle
-            class="border border-line-2 px-2.5 py-1.5 font-mono text-[11px] text-p-dim transition-colors hover:border-p/60 hover:text-p md:hidden"
+            class="border border-line-2 px-2.5 py-1.5 font-mono text-[11px] text-ink-dim transition-colors hover:border-signal/60 hover:text-signal md:hidden"
             aria-expanded="false" aria-controls="mobile-nav" aria-label="Open navigation menu">
       <span data-nav-label>MENU</span>
     </button>
@@ -48,18 +48,18 @@
       {% for item in nav %}
         {% set active = (section == item.section) %}
         <a href="{{ item.url }}"
-           class="flex items-baseline gap-3 border-l-2 px-3 py-3 font-mono text-sm transition-colors {% if active %}border-p bg-p/10 text-p{% else %}border-transparent text-p-dim hover:border-p/50 hover:text-p-hi{% endif %}"
+           class="flex items-baseline gap-3 border-l-2 px-3 py-3 font-mono text-sm transition-colors {% if active %}border-signal bg-signal/10 text-signal{% else %}border-transparent text-ink-dim hover:border-signal/50 hover:text-ink-hi{% endif %}"
            {% if active %}aria-current="page"{% endif %}>
-          <span class="w-6 shrink-0 text-p/40" aria-hidden="true">{{ loop.index }}</span>
-          <span class="uppercase tracking-wider">{{ item.label }}</span>
-          <span class="ml-auto truncate text-[11px] text-p-faint">{{ item.hint }}</span>
+          <span class="w-6 shrink-0 text-signal/40" aria-hidden="true">{{ loop.index }}</span>
+          <span class="crawl-type">{{ item.label }}</span>
+          <span class="ml-auto truncate text-[11px] text-ink-faint">{{ item.hint }}</span>
         </a>
       {% endfor %}
       <a href="/feed.xml"
-         class="flex items-baseline gap-3 border-l-2 border-transparent px-3 py-3 font-mono text-sm text-p-dim transition-colors hover:border-p/50 hover:text-p-hi">
-        <span class="w-6 shrink-0 text-p/40" aria-hidden="true">{{ nav.length + 1 }}</span>
-        <span class="uppercase tracking-wider">RSS</span>
-        <span class="ml-auto truncate text-[11px] text-p-faint">raw feed</span>
+         class="flex items-baseline gap-3 border-l-2 border-transparent px-3 py-3 font-mono text-sm text-ink-dim transition-colors hover:border-signal/50 hover:text-ink-hi">
+        <span class="w-6 shrink-0 text-signal/40" aria-hidden="true">{{ nav.length + 1 }}</span>
+        <span class="crawl-type">RSS</span>
+        <span class="ml-auto truncate text-[11px] text-ink-faint">raw feed</span>
       </a>
     </nav>
   </div>

@@ -8,12 +8,12 @@ description: Index of every topic in the archive.
 {% from "macros.njk" import rule %}
 
 <header class="mb-12 pt-4">
-  <p class="mb-3 font-mono text-sm text-p-dim">
-    <span class="text-p glow-sm">$</span> grep -rl '#' ~/posts | sort | uniq -c
+  <p class="mb-3 font-mono text-sm text-ink-dim">
+    <span class="text-signal">$</span> grep -rl '#' ~/posts | sort | uniq -c
   </p>
-  <h1 class="aberrate font-display text-[clamp(2.5rem,9vw,5.5rem)] uppercase leading-[0.9] text-p">Topics</h1>
-  <p class="mt-4 max-w-measure font-mono text-sm leading-relaxed text-p-dim">
-    <span class="text-p-hi">{{ collections.validTagList.length }}</span> distinct subjects
+  <h1 class="title-card text-[clamp(2.5rem,9vw,5.5rem)] leading-[0.92]">Topics</h1>
+  <p class="mt-4 max-w-measure font-mono text-sm leading-relaxed text-ink-dim">
+    <span class="text-ink-hi">{{ collections.validTagList.length }}</span> distinct subjects
     indexed across the archive. Size tracks record count.
   </p>
 </header>
@@ -23,12 +23,12 @@ description: Index of every topic in the archive.
 {% if tagList.length === 0 %}
   <div class="panel bracketed group">
     <div class="panel-hd">
-      <span><span class="text-p/50" aria-hidden="true">▚▚</span> index</span>
-      <span class="text-p/50">0 entries</span>
+      <span><span class="text-signal/50" aria-hidden="true">▚▚</span> index</span>
+      <span class="text-signal/50">0 entries</span>
     </div>
     <div class="panel-body">
-      <p class="font-display text-3xl text-p glow">INDEX EMPTY</p>
-      <p class="mt-3 max-w-measure font-mono text-sm text-p-dim">
+      <p class="crawl-type text-2xl text-signal">INDEX EMPTY</p>
+      <p class="mt-3 max-w-measure font-mono text-sm text-ink-dim">
         Topics are derived from post front matter. Add
         <code class="border border-line-2 px-1 py-0.5">tags: [thing]</code> to a post and it
         registers here automatically.
@@ -39,8 +39,8 @@ description: Index of every topic in the archive.
 {% else %}
   <div class="panel" data-reveal>
     <div class="panel-hd">
-      <span><span class="text-p/50" aria-hidden="true">▚▚</span> index</span>
-      <span class="text-p/50">{{ tagList.length }} entries</span>
+      <span><span class="text-signal/50" aria-hidden="true">▚▚</span> index</span>
+      <span class="text-signal/50">{{ tagList.length }} entries</span>
     </div>
     <div class="panel-body">
       <ul class="flex flex-wrap items-baseline gap-x-5 gap-y-3">
@@ -48,10 +48,10 @@ description: Index of every topic in the archive.
           {% set postCount = collections.posts | getByTag(tag) | length %}
           <li>
             <a href="/tags/{{ tag | slugify }}/"
-               class="group inline-flex items-baseline gap-1.5 font-display leading-none text-p-dim transition-colors hover:text-p hover:glow
+               class="group inline-flex items-baseline gap-1.5 font-display font-bold leading-none text-ink-dim transition-colors hover:text-signal
                       {% if postCount > 6 %}text-5xl{% elif postCount > 3 %}text-4xl{% elif postCount > 1 %}text-3xl{% else %}text-2xl{% endif %}">
-              <span class="text-p/35 transition-colors group-hover:text-p" aria-hidden="true">#</span>{{ tag }}
-              <sup class="font-mono text-[11px] text-p-faint">{{ postCount }}</sup>
+              <span class="text-signal/35 transition-colors group-hover:text-signal" aria-hidden="true">#</span>{{ tag }}
+              <sup class="font-mono text-[11px] text-ink-faint">{{ postCount }}</sup>
             </a>
           </li>
         {% endfor %}

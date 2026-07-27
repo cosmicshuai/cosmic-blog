@@ -10,15 +10,15 @@ description: Short notes, newest first — the microblog.
 {% set notes = collections.notes %}
 
 <header class="mb-12 pt-4">
-  <p class="mb-3 font-mono text-sm text-p-dim">
-    <span class="text-p glow-sm">$</span> tail -f /var/log/notes
+  <p class="mb-3 font-mono text-sm text-ink-dim">
+    <span class="text-signal">$</span> tail -f /var/log/notes
   </p>
-  <h1 class="aberrate font-display text-[clamp(2.5rem,9vw,5.5rem)] uppercase leading-[0.9] text-p">Notes</h1>
-  <p class="mt-4 max-w-measure font-mono text-sm leading-relaxed text-p-dim">
+  <h1 class="title-card text-[clamp(2.5rem,9vw,5.5rem)] leading-[0.92]">Notes</h1>
+  <p class="mt-4 max-w-measure font-mono text-sm leading-relaxed text-ink-dim">
     Short notes — half-thoughts, links, things not worth a whole record.
-    <span class="text-p-hi">{{ notes.length }}</span>
+    <span class="text-ink-hi">{{ notes.length }}</span>
     {{ "entry" if notes.length == 1 else "entries" }} on the log.
-    <a href="/notes/feed.xml" class="border-b border-dashed border-p/50 text-p transition-colors hover:bg-p/15">Separate feed</a>
+    <a href="/notes/feed.xml" class="border-b border-dashed border-signal/50 text-signal transition-colors hover:bg-signal/15">Separate feed</a>
     — subscribing here won't fill your reader with long-form, and vice versa.
   </p>
 </header>
@@ -27,24 +27,24 @@ description: Short notes, newest first — the microblog.
 
   <div class="panel bracketed group">
     <div class="panel-hd">
-      <span><span class="text-p/50" aria-hidden="true">▚▚</span> /var/log/notes</span>
-      <span class="text-p/50">0 entries</span>
+      <span><span class="text-signal/50" aria-hidden="true">▚▚</span> /var/log/notes</span>
+      <span class="text-signal/50">0 entries</span>
     </div>
     <div class="panel-body pool">
-      <p class="font-display text-3xl leading-none text-p glow sm:text-4xl">LOG EMPTY</p>
-      <p class="mt-4 max-w-measure font-mono text-sm leading-relaxed text-p-dim">
+      <p class="crawl-type text-2xl leading-none text-signal sm:text-3xl">LOG EMPTY</p>
+      <p class="mt-4 max-w-measure font-mono text-sm leading-relaxed text-ink-dim">
         The log is open and nothing has been written to it yet. The first note will
         land at the top.
       </p>
-      <p class="mt-6 font-mono text-sm text-p-faint">
-        <span class="text-p/60">$</span> ls src/notes/*.md<br>
+      <p class="mt-6 font-mono text-sm text-ink-faint">
+        <span class="text-signal/60">$</span> ls src/notes/*.md<br>
         <span class="text-warn">ls: no matches found</span>
       </p>
-      <p class="mt-6 max-w-measure font-mono text-xs leading-relaxed text-p-faint">
+      <p class="mt-6 max-w-measure font-mono text-xs leading-relaxed text-ink-faint">
         A note is a Markdown file in
-        <code class="border border-line-2 px-1 py-0.5 text-p-dim">src/notes/</code>
-        named <code class="border border-line-2 px-1 py-0.5 text-p-dim">YYYY-MM-DD-HHMMSS.md</code>,
-        with a full-timestamp <code class="border border-line-2 px-1 py-0.5 text-p-dim">date:</code>
+        <code class="border border-line-2 px-1 py-0.5 text-ink-dim">src/notes/</code>
+        named <code class="border border-line-2 px-1 py-0.5 text-ink-dim">YYYY-MM-DD-HHMMSS.md</code>,
+        with a full-timestamp <code class="border border-line-2 px-1 py-0.5 text-ink-dim">date:</code>
         in its front matter and the text as the body. Nothing else.
       </p>
     </div>
@@ -54,17 +54,17 @@ description: Short notes, newest first — the microblog.
 
   <div class="panel" data-reveal>
     <div class="panel-hd">
-      <span><span class="text-p/50" aria-hidden="true">▚▚</span> /var/log/notes</span>
-      <span class="flex items-center gap-2 text-p/50">
+      <span><span class="text-signal/50" aria-hidden="true">▚▚</span> /var/log/notes</span>
+      <span class="flex items-center gap-2 text-signal/50">
         <span class="inline-block h-1.5 w-1.5 rounded-full bg-ok animate-bar-pulse" aria-hidden="true"></span>
         listening
       </span>
     </div>
 
     <!-- Live tail cursor: the log is open and waiting. -->
-    <p class="border-b border-line px-4 py-2.5 font-mono text-xs text-p-faint">
-      <span class="text-p/50" aria-hidden="true">▸</span>
-      awaiting input<span class="cursor-block text-p" aria-hidden="true"></span>
+    <p class="border-b border-line px-4 py-2.5 font-mono text-xs text-ink-faint">
+      <span class="text-signal/50" aria-hidden="true">▸</span>
+      awaiting input<span class="cursor-block text-signal" aria-hidden="true"></span>
     </p>
 
     <ol class="divide-y divide-line/60">
@@ -76,34 +76,34 @@ description: Short notes, newest first — the microblog.
 
         {% if thisDay != prevDay %}
           <li class="flex items-center gap-4 bg-surface-2/40 px-4 py-1.5" aria-hidden="true">
-            <span class="font-pixel text-[10px] uppercase tracking-widest text-p-dim">{{ thisDay }}</span>
+            <span class="font-mono text-[10px] uppercase tracking-widest text-ink-dim">{{ thisDay }}</span>
             <span class="h-px flex-1 bg-[repeating-linear-gradient(to_right,rgb(var(--c-line-2))_0_4px,transparent_4px_9px)]"></span>
           </li>
         {% endif %}
 
-        <li id="n-{{ slug }}" class="group relative border-l-2 border-transparent px-4 py-4 transition-colors duration-150 target:border-p target:bg-p/10 hover:border-p/60 hover:bg-p/[0.05]">
+        <li id="n-{{ slug }}" class="group relative border-l-2 border-transparent px-4 py-4 transition-colors duration-150 target:border-signal target:bg-signal/10 hover:border-signal/60 hover:bg-signal/[0.05]">
 
           <!-- Log line header -->
-          <div class="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 font-pixel text-[10px] uppercase tracking-widest text-p-faint">
-            <span class="text-p/60">SEQ {{ seq | pad }}</span>
+          <div class="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] uppercase tracking-widest text-ink-faint">
+            <span class="text-signal/60">SEQ {{ seq | pad }}</span>
             <span aria-hidden="true" class="text-line-2">·</span>
             <time datetime="{{ note.date | dateToRfc3339 }}">{{ note.date | utcTime }}</time>
             <span aria-hidden="true" class="text-line-2">·</span>
             <span>{{ note.templateContent | charCount }} B</span>
             <a href="#n-{{ slug }}"
-               class="ml-auto text-p/0 transition-colors group-hover:text-p/70 focus-visible:text-p"
+               class="ml-auto text-signal/0 transition-colors group-hover:text-signal/70 focus-visible:text-signal"
                aria-label="Permalink to note {{ seq }}">#</a>
           </div>
 
           <!-- Body -->
-          <div class="note-body max-w-measure font-mono text-[15px] leading-[1.7] text-p-body">
+          <div class="note-body max-w-measure font-mono text-[15px] leading-[1.7] text-ink">
             {{ note.templateContent | safe }}
           </div>
         </li>
       {% endfor %}
     </ol>
 
-    <div class="border-t border-line px-4 py-2 font-mono text-[11px] text-p-faint">
+    <div class="border-t border-line px-4 py-2 font-mono text-[11px] text-ink-faint">
       end of log — {{ notes.length }} {{ "entry" if notes.length == 1 else "entries" }}
     </div>
   </div>
