@@ -55,6 +55,8 @@ Check any new atmospheric effect against rule 1 before building it.
 
 **Notes are a second content stream, not a tag.** `src/notes/*.md` are `permalink: false` (page-less) and reach the reader only through `/notes/`, `/notes/feed.xml`, the homepage panel and the command palette. Do **not** give them `tags:` — it would pollute the topic index — and do **not** set `eleventyExcludeFromCollections`, which would hide them from `getFilteredByGlob` and empty the collection. Each note needs a **full timestamp** in `date:`; Eleventy derives dates from the `YYYY-MM-DD-` filename prefix and would otherwise floor every note to midnight.
 
+**A note's `date` is fixed up in the `notes` collection, not in a preprocessor.** Eleventy resolves `page.date` during the data cascade, so mutating `data.date` from `addPreprocessor` is too late and silently does nothing — this was tried and does not work. The collection callback maps over items and recovers the time from a `YYYY-MM-DD-HHMMSS` filename when front matter has no `date:`. Without it, same-day notes all land on `00:00:00Z` and, because anchors derive from the timestamp, share a DOM id.
+
 **Note anchors come from the timestamp, not the filename.** Eleventy strips the `YYYY-MM-DD-` prefix off `fileSlug`, so `2026-07-26-081500.md` yields `081500` — two notes on different days at the same second would collide. Use the `noteId` filter (`20260726-081500`).
 
 **Nunjucks binds `|` looser than `+`.** `("/notes/#n-" + note.date | noteId)` pipes the *concatenated* string into the filter. Always parenthesise: `("/notes/#n-" + (note.date | noteId))`.
@@ -68,7 +70,7 @@ Check any new atmospheric effect against rule 1 before building it.
 - `src/styles/output.css` must exist for anything to render; build order is CSS before Eleventy. Don't commit it.
 - **`eleventy --serve` does not reliably re-copy `output.css` when Tailwind rewrites it out-of-band.** If a style change appears not to apply, you are probably looking at stale CSS — restart the server, or verify against a real `npm run build` + a static server over `_site/`. Do not chase a phantom CSS bug first.
 - The repo currently has **zero posts and zero notes**. Empty states on `/`, `/posts/`, `/tags/` and `/notes/` are designed, not placeholders — keep them working. To verify rendering, add a throwaway `.md`, check it, then delete it.
-- iMessage ingestion for notes is **designed but not built** (see README). Apple has no receive API; it needs an always-on Mac polling `~/Library/Messages/chat.db` with Full Disk Access. Don't promise it works.
+- Notes are published from iOS via an Apple Shortcut hitting the GitHub Contents API (`docs/publishing-from-ios.md`). iMessage ingestion is **parked, not planned** (see README). Apple has no receive API; it needs an always-on Mac polling `~/Library/Messages/chat.db` with Full Disk Access. Don't promise it works.
 - Full-page screenshots misrepresent this design — the fixed rail, status line and starfield only compose correctly in viewport-sized captures.
 - CI: `.github/workflows/deploy.yml` — Node 24, `npm ci` → `npm run build` → `wrangler-action`, `directory: _site`. Needs `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_PROJECT_NAME`.
 - No `CLAUDE.md` — this file is the sole agent instruction source.

@@ -130,6 +130,24 @@ export default function (eleventyConfig) {
   eleventyConfig.addCollection("notes", (collection) => {
     return collection
       .getFilteredByGlob("./src/notes/*.md")
+      .map((item) => {
+        // Eleventy only parses the YYYY-MM-DD- filename prefix, so a note
+        // without an explicit `date:` lands on 00:00:00Z. Anchor ids are
+        // built from the timestamp, so two same-day notes would then share
+        // a DOM id and every permalink but the first would break. Recover
+        // the time from the YYYY-MM-DD-HHMMSS filename, read as UTC.
+        // Explicit front matter always wins.
+        if (item.data.date) return item;
+        const m = item.inputPath.match(
+          /(\d{4})-(\d{2})-(\d{2})-(\d{2})(\d{2})(\d{2})\.md$/
+        );
+        if (m) {
+          item.date = new Date(
+            Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6])
+          );
+        }
+        return item;
+      })
       .sort((a, b) => b.date - a.date);
   });
 

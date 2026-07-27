@@ -178,29 +178,21 @@ That's the whole format. Notes:
 - Notes deliberately do **not** appear in `/posts/`, the main feed, or the
   tag index. They're a separate stream.
 
-Adding one is currently a commit. Publishing from a phone over iMessage is
-planned but not built — see below.
+Publish from your phone with an Apple Shortcut that commits straight to
+`src/notes/` — setup in [docs/publishing-from-ios.md](docs/publishing-from-ios.md).
+One tap, live in about 40 seconds, no server and no running Mac.
 
-### Publishing over iMessage (not yet implemented)
+`date:` is optional. When it's absent the build recovers the full timestamp from
+a `YYYY-MM-DD-HHMMSS` filename (read as UTC), so a file made by hand in the
+GitHub web UI is safe too. Explicit front matter always wins.
 
-Apple exposes no API for receiving iMessages; Messages for Business requires
-being an approved business and goes through a commercial provider. The only way
-to genuinely receive iMessage is a Mac that stays powered on, running an agent
-with Full Disk Access that polls `~/Library/Messages/chat.db` and commits new
-messages here.
+### Publishing over iMessage (not implemented)
 
-The intended shape, for when it gets built:
+Apple exposes no API for receiving iMessages; the only genuine route is a Mac
+that stays powered on running an agent with Full Disk Access that polls
+`~/Library/Messages/chat.db`. The Shortcut above covers the same need without
+depending on a machine being awake, so this is parked rather than planned.
 
-- `/usr/bin/python3` as the agent interpreter — a stable, root-owned path, so
-  the Full Disk Access grant survives Homebrew and conda churn.
-- Watch `is_from_me = 1` messages carrying a configured prefix, so ordinary
-  conversation is never published by accident.
-- Fall back to decoding `attributedBody` when `message.text` is NULL, which is
-  common for messages composed on iOS and synced to the Mac.
-- Track the last processed `ROWID` in a state file and start from the current
-  max on first run, so it never backfills years of history.
-- Publish through the GitHub Contents API rather than a local clone — atomic,
-  no working-tree races, no push conflicts.
 
 ## Project Structure
 
