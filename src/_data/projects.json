@@ -1,23 +1,30 @@
 [
   {
-    "name": "Terminal CLI",
-    "description": "A fast, minimalist command-line interface framework for building modern terminal applications",
-    "url": "https://github.com/cosmic/terminal-cli",
-    "tags": ["python", "cli", "async"],
+    "name": "Open Voice Typer",
+    "description": "Open-source iOS voice-input keyboard — speak in any app, get AI-polished text at your cursor, using your own API keys. Works around the fact that keyboard extensions can't touch the microphone.",
+    "url": "https://github.com/cosmicshuai/open_voice_typer",
+    "tags": ["swift", "ios", "asr", "llm"],
     "status": "active"
   },
   {
-    "name": "DataVault",
-    "description": "Encrypted data storage solution with zero-knowledge architecture and real-time sync",
-    "url": "https://github.com/cosmic/datavault",
-    "tags": ["rust", "cryptography", "database"],
-    "status": "active"
-  },
-  {
-    "name": "Neural Playground",
-    "description": "Interactive visualization toolkit for exploring neural network architectures and training dynamics",
-    "url": "https://github.com/cosmic/neural-playground",
-    "tags": ["python", "ml", "visualization"],
+    "name": "llm-serve",
+    "description": "High-throughput, low-latency LLM inference server for Apple Silicon, built on MLX and C++20.",
+    "url": "https://github.com/cosmicshuai/mlx_llm_serving",
+    "tags": ["c++", "mlx", "metal", "inference"],
     "status": "wip"
+  },
+  {
+    "name": "Family Weekend Activity Finder",
+    "description": "Conversational weekend planner that runs a SKILL.md agent with live web search, and cites every pick.",
+    "url": "https://github.com/cosmicshuai/family-weekend-activity-finder",
+    "tags": ["typescript", "agent", "claude"],
+    "status": "active"
+  },
+  {
+    "name": "COSMIC-OS",
+    "description": "This site. Eleventy and Tailwind on Cloudflare Pages, themed after the opening crawl and rebuilt around readability.",
+    "url": "https://github.com/cosmicshuai/cosmic-blog",
+    "tags": ["11ty", "tailwind", "cloudflare"],
+    "status": "active"
   }
 ]

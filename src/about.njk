@@ -65,19 +65,22 @@ description: Operator record, hardware inventory and contact channels.
   {{ rule("readme", "~/README.md") }}
   <div class="max-w-measure space-y-5 font-mono text-sm leading-[1.85] text-ink">
     <p>
-      I build software and take pictures. Days go to systems that have to stay up —
-      APIs, data paths, the unglamorous plumbing that everything else stands on.
-      Nights go to whatever I'm curious about that week.
+      I build software, mostly close to the metal and mostly on my own machines.
+      Lately that means inference servers on Apple Silicon, an iOS keyboard that
+      talks to whichever model you point it at, and agents that have to cite their
+      sources. The through-line is latency and control — things that run locally,
+      with your own keys, and answer fast.
     </p>
     <p>
-      Photography is the counterweight. Code is endlessly revisable; a frame is not.
-      Deciding once, in the moment, and living with it turns out to be a useful discipline
-      to carry back to the keyboard.
+      I like problems where the constraint is real: a keyboard extension that cannot
+      touch the microphone, a GPU budget that will not grow, a model that has to load
+      before anyone loses patience. Working inside a hard limit produces better designs
+      than working without one.
     </p>
     <p>
-      This site is the long-form record of both — essays on building things, notes from
-      the field, and whatever the camera came home with. No analytics, no newsletter,
-      no popups. Just files on a server.
+      This site is the long-form record — notes from the field, whatever I'm building
+      that week, and the occasional post that outgrew a note. No analytics, no
+      newsletter, no popups. Just files on a server.
     </p>
   </div>
 </section>
@@ -88,9 +91,9 @@ description: Operator record, hardware inventory and contact channels.
 
   <div class="grid gap-4 sm:grid-cols-3">
     {% set kit = [
-      { label: "languages", items: ["TypeScript", "Python", "Rust", "Go", "SQL"] },
-      { label: "stack", items: ["React", "Node", "Postgres", "Redis", "Cloudflare"] },
-      { label: "bench", items: ["Neovim", "tmux", "Docker", "Git", "Figma"] }
+      { label: "languages", items: ["C++", "Swift", "TypeScript", "Python", "SQL"] },
+      { label: "stack", items: ["MLX", "Metal", "SwiftUI", "Node", "Cloudflare"] },
+      { label: "bench", items: ["Xcode", "CMake", "Neovim", "tmux", "Git"] }
     ] %}
     {% for group in kit %}
       <div class="group panel bracketed pool">
