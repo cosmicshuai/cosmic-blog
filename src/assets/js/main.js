@@ -446,11 +446,27 @@ function lightbox() {
   const prevBtn = $('#lightbox-prev', el);
   const nextBtn = $('#lightbox-next', el);
 
+  // Largest candidate in a srcset. The viewer must not reuse the thumbnail's
+  // currentSrc: that resolves against the grid's `sizes` (33vw), and while the
+  // image is still lazy it is just the fallback `src` — either way a 300–600px
+  // file blown up to 68vh. Prefer the webp <source>, fall back to the <img>.
+  const widest = (srcset) => {
+    const best = (srcset || '')
+      .split(',')
+      .map((c) => c.trim().split(/\s+/))
+      .filter((c) => c[0])
+      .reduce((a, c) => (parseInt(c[1], 10) || 0) > a.w ? { url: c[0], w: parseInt(c[1], 10) || 0 } : a,
+        { url: '', w: 0 });
+    return best.url;
+  };
+
   const frames = items.map((item) => {
     const source = item.querySelector('.gallery-image');
+    const webp = item.querySelector('source[type="image/webp"]');
     const cap = item.querySelector('.photo-caption');
+    const full = webp && widest(webp.srcset);
     return {
-      src: source ? source.currentSrc || source.src : '',
+      src: full || (source ? widest(source.srcset) || source.currentSrc || source.src : ''),
       alt: source ? source.alt : '',
       caption: cap ? cap.getAttribute('data-caption') || '' : '',
     };

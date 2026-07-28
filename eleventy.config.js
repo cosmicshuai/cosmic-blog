@@ -35,8 +35,12 @@ async function galleryImageShortcode(src, alt, sizes = "100vw", classes = "") {
     throw new Error(`Missing \`alt\` on image from: ${src}`);
   }
 
+  // 300/600 serve the grid thumbnail; 1200/1600 exist for the lightbox, which
+  // reuses the thumbnail's currentSrc rather than loading its own source — so
+  // without a large candidate in the srcset the full-screen view is a 600px
+  // image scaled to 68vh.
   let metadata = await eleventyImage(src, {
-    widths: [300, 600],
+    widths: [300, 600, 1200, 1600],
     formats: ["webp", "jpeg"],
     outputDir: "./_site/img/",
     urlPath: "/img/",
