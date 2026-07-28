@@ -62,7 +62,6 @@ export default function (eleventyConfig) {
   // Passthrough copy
   eleventyConfig.addPassthroughCopy("./src/styles/output.css");
   eleventyConfig.addPassthroughCopy("./src/assets");
-  eleventyConfig.addPassthroughCopy("./src/assets/photos");
 
   // Watch targets
   eleventyConfig.addWatchTarget("./src/styles/");
