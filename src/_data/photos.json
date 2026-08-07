@@ -38,5 +38,40 @@
     "src": "./src/assets/photos/000045960034.jpg",
     "alt": "Yellow and white city bus in motion passing a covered wooden bus shelter on a coastal highway, tall palm trees and green hillside with utility poles in the background",
     "caption": "Hawaii — Island Bus"
+  },
+  {
+    "src": "./src/assets/photos/000045950010.jpg",
+    "alt": "Sandy beach along a calm lake bordered by dense spring forest with bright green pines and budding deciduous trees, people scattered along the shore under pale sky",
+    "caption": "Boston — Walden Pond, Spring"
+  },
+  {
+    "src": "./src/assets/photos/000045950013.jpg",
+    "alt": "Calm lake with glassy reflections of dense evergreen forest, thin branch with young green leaves in soft-focus foreground, pale sandy shore with distant figures",
+    "caption": "Boston — Walden Through the Branches"
+  },
+  {
+    "src": "./src/assets/photos/000045950019.jpg",
+    "alt": "Wide blue lake with gentle ripples, distant low forested shore under a bright sky with puffy white clouds, bare branches with fresh buds framing the top",
+    "caption": "Boston — Lake Horizon"
+  },
+  {
+    "src": "./src/assets/photos/000045950026.jpg",
+    "alt": "Two tall off-white industrial smokestacks with metal catwalks rising above a brick and corrugated-metal building, faint white smoke against an overcast gray sky",
+    "caption": "Boston — Power Plant"
+  },
+  {
+    "src": "./src/assets/photos/000045950031.jpg",
+    "alt": "Early spring street with young trees showing light green and reddish buds, grassy median with staked saplings, parked cars and a stone institutional building with a modern glass tower behind",
+    "caption": "Boston — Fenway Spring"
+  },
+  {
+    "src": "./src/assets/photos/000045950033.jpg",
+    "alt": "Charles River viewed toward Boston with the Harvard Bridge spanning the water, buoys floating in the foreground, skyline with the Citgo sign and stacked BU building under overcast sky",
+    "caption": "Boston — Charles River"
+  },
+  {
+    "src": "./src/assets/photos/000045950034.jpg",
+    "alt": "Walker Memorial at MIT, a neoclassical hall with tall columns and inscription dedicated to Francis Amasa Walker, cars parked along the street and bare spring trees in front",
+    "caption": "Boston — Walker Memorial"
   }
 ]
