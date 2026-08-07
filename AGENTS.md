@@ -20,6 +20,7 @@ Check any new atmospheric effect against rule 1 before building it.
 - `npm run build` — CSS then Eleventy; outputs `_site/`. Always use this for verification (exits 0 = ok).
 - `npm run build:css` — writes `src/styles/output.css`, which is **gitignored** but required for the site to render. Passthrough-copied by Eleventy.
 - `npm run dev` — CSS build, then concurrent `watch:css` + `watch:11ty` on :8080.
+- `npm run serve` — start the project
 - No lint, typecheck, or test scripts. `playwright` is a dependency but is not wired to a runner.
 
 ## Structure
