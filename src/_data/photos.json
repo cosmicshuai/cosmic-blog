@@ -3,5 +3,40 @@
     "src": "./src/assets/photos/ogunquit-2025.jpg",
     "alt": "Ogunquit Beach in Maine seen from the rocks along Marginal Way, sunbathers and umbrellas scattered across the sand, surf breaking into a wide blue bay under a clear summer sky",
     "caption": "New England Summer"
+  },
+  {
+    "src": "./src/assets/photos/000045960002.jpg",
+    "alt": "Layered tan and brown volcanic cliffs on Oahu's southeastern shore with white surf breaking over tidal shelves into deep blue Pacific, coastal highway visible on the headland",
+    "caption": "Hawaii — Southeastern Cliffs"
+  },
+  {
+    "src": "./src/assets/photos/000045960004.jpg",
+    "alt": "Bright yellow Range Rover with hot pink wheels and racing stripes parked by a stone seawall overlooking the ocean, with Hawaii license plate PRYNX and social media decals on the window",
+    "caption": "Hawaii — Prynce"
+  },
+  {
+    "src": "./src/assets/photos/000045960014.jpg",
+    "alt": "Silhouetted palm trees at dusk over a food truck lot strung with warm string lights, large umbrellas and picnic tables against a peach and violet sky with scattered clouds",
+    "caption": "Hawaii — Evening Market"
+  },
+  {
+    "src": "./src/assets/photos/000045960020.jpg",
+    "alt": "Turquoise bay viewed from a green-topped rocky point, gentle surf with white foam, a long pale sand beach backed by dense palm trees and misty green mountains under overcast sky",
+    "caption": "Hawaii — Windward Bay"
+  },
+  {
+    "src": "./src/assets/photos/000045960022.jpg",
+    "alt": "Low flat islet offshore with a natural rock arch framing the ocean beyond, surrounded by turquoise water and white surf under pale blue sky, rocky foreground shore",
+    "caption": "Hawaii — Arch Islet"
+  },
+  {
+    "src": "./src/assets/photos/000045960027.jpg",
+    "alt": "Traffic stopped on a palm-lined Waikiki street in Honolulu, cars under red lights with Louis Vuitton storefront and ornate high-rise on the left, bright blue sky and tall palm canopy",
+    "caption": "Hawaii — Kalākaua Avenue"
+  },
+  {
+    "src": "./src/assets/photos/000045960034.jpg",
+    "alt": "Yellow and white city bus in motion passing a covered wooden bus shelter on a coastal highway, tall palm trees and green hillside with utility poles in the background",
+    "caption": "Hawaii — Island Bus"
   }
 ]
